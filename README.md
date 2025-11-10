@@ -34,9 +34,9 @@ Obiectivul final al fiecărei zone este **confruntarea cu un Boss** cu **mecanic
 
 
 
-##Members
+## Members
 Toba Catalin-Gabriel 343; Guinea Paul-Matei 343; Balasoiu Bogdan 343; Constantin Tudor-Ioan 343
 
 
-##Feedback
+## Feedback
 You can send your review on the mail catalin-gabriel.toba@s.unibuc.ro
