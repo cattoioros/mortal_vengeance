@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2084982633406666509}
   - component: {fileID: 3609038361680760194}
   - component: {fileID: 7646236407653502601}
+  - component: {fileID: 3918869893361034582}
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -126,3 +127,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
   moveSpeed: 2
   changeDirectionTime: 5
+--- !u!114 &3918869893361034582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3700890347920579628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2412070b4ab8dc4798a7200f3a1c5e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCHealth
+  maxHealth: 100
