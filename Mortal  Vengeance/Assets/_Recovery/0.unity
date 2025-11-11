@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 59955581}
   - component: {fileID: 59955580}
   - component: {fileID: 59955584}
+  - component: {fileID: 59955585}
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -245,6 +246,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCMovement
   moveSpeed: 2
   changeDirectionTime: 5
+--- !u!114 &59955585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59955579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28da373fed8b0f649b1780aaa890653b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCSpawner
+  npcPrefab: {fileID: 3700890347920579628, guid: c8c342c1bcbd05a40aea3c543af9b54c, type: 3}
+  npcCount: 15
+  spawnRange: 50
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
