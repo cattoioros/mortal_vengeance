@@ -8,11 +8,11 @@ public class PlayerHealthManager : MonoBehaviour
     private float currentMana;
 
 
-    void Start()
-    {
-        currentHealth = stats.maxHealth;
-        currentMana = stats.maxMana;
-    }
+    // void Start()
+    // {
+    //     currentHealth = stats.maxHealth;
+    //     currentMana = stats.maxMana;
+    // }
 
     public void TakeDamage(float amount)
     {
