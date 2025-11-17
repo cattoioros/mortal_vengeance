@@ -1,12 +1,13 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 
+//Starile inamicilor
 public enum EnemyState { Idle, Chase, Attack, Dead}
 
 public class EnemyBase : MonoBehaviour
 {
-
+    //Caracteristici de baza ale tuturor inamicilor
     [Header("Stats & Ranges")]
     [SerializeField] protected int maxHealth;
     [SerializeField] protected float movementSpeed;
@@ -26,6 +27,7 @@ public class EnemyBase : MonoBehaviour
         currentHealth = maxHealth;
         currentState = EnemyState.Idle;
 
+        //Preluarea agentului pentru miscare
         agent = GetComponent<NavMeshAgent>();
         if(agent != null)
         {
@@ -33,18 +35,22 @@ public class EnemyBase : MonoBehaviour
             agent.isStopped = true;
         }
 
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if(GameManager.instance != null)
+        {
+            playerTarget = GameManager.instance.PlayerTransform;
 
-        if (playerObj != null)
-        {
-            playerTarget = playerObj.transform;
         }
-        else
+
+        if (playerTarget == null)
         {
-            Debug.LogError("Player nu a fost gasit.");
+            Debug.LogError(gameObject.name + " nu a putut gasi jucătorul prin GameManager.");
         }
+
+     
+
     }
 
+    //Comportamentul inamicilor cat timp jucatorul nu este in raza
     protected virtual void UpdateIdle()
     {
         if (agent != null)
@@ -52,6 +58,7 @@ public class EnemyBase : MonoBehaviour
 
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
 
+        //Schimbarea starii in cazul in care jucatorul intra in raza inamicului
         if(distancePlayer <= chaseRange)
         {
             currentState = EnemyState.Chase;
@@ -60,32 +67,35 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-
+    //Logica starii de urmarire
     protected virtual void UpdateChase()
     {
-        if(agent!=null)
-        {
-            agent.SetDestination(playerTarget.position);
-        }
-
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
 
-        if(distancePlayer <= attackRange)
+
+        if (distancePlayer > chaseRange)
         {
-            currentState = EnemyState.Attack;
-            if(agent != null )
+            currentState = EnemyState.Idle;
+            if (agent != null)
                 agent.isStopped = true;
             return;
         }
 
-        if(distancePlayer > chaseRange)
-            currentState = EnemyState.Idle;
-        
+        if (distancePlayer <= attackRange)
+        {
+            currentState = EnemyState.Attack;
+            if (agent != null)
+                agent.isStopped = true;
+            return;
+        }
 
+        if (agent != null)
+            agent.SetDestination(playerTarget.position);
     }
-
+    //Logica starii de atac
     protected virtual void UpdateAttack()
     {
+        //Inamicul se roteste spre jucator
         Vector3 lookDirection = playerTarget.position - transform.position;
 
         lookDirection.y = 0f;
@@ -94,6 +104,7 @@ public class EnemyBase : MonoBehaviour
 
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
 
+        //Verificam daca jucatorul iese din raza de atac
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
 
         if (distancePlayer > attackRange)
@@ -102,11 +113,12 @@ public class EnemyBase : MonoBehaviour
             if (agent != null) agent.isStopped = false;
             return;
         }
-
+        //Efectuare atacului
         AttackLogic();
 
     }
 
+    //Functie pentru ranirea inamicilor
     public virtual void TakeDamage(int amount)
     {
         currentHealth -= amount;
@@ -117,6 +129,7 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
+    //Moartea inamicilor
     protected virtual void Die()
     {
         currentState = EnemyState.Dead;
@@ -142,6 +155,7 @@ public class EnemyBase : MonoBehaviour
         if (playerTarget == null || currentState == EnemyState.Dead)
             return;
 
+        //Schimbarea intre stari
         switch (currentState)
         {
             case EnemyState.Idle:
@@ -157,6 +171,7 @@ public class EnemyBase : MonoBehaviour
         
     }
 
+    //Logica de atac( Va fi implementata de fiecare casa depinzand de tipul atacului)
     protected virtual void AttackLogic()
     {
 

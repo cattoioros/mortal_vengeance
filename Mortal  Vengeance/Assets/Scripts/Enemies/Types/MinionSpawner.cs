@@ -44,10 +44,10 @@ public class MinionSpawner : EnemyBase
                 initPool(1);
             }
 
-            // 1. Scoatem minionul din pool
+            //Scoatem minionul din pool
             GameObject minionToSpawn = minionPool.Dequeue();
 
-            // 2. Îl activăm și îl repoziționăm
+            //Activam minionul si il pozitionam
             minionToSpawn.transform.position = spawnPoint.position;
             minionToSpawn.transform.rotation = Quaternion.identity;
             minionToSpawn.SetActive(true);
@@ -57,19 +57,23 @@ public class MinionSpawner : EnemyBase
 
     public void ReturnMinionToPool(GameObject minion)
     {
-        // 1. Dezactivăm obiectul
+        //Dezactivam obiectul
         minion.SetActive(false);
 
-        // 2. Îl punem înapoi în coadă
+        //Il punem inapoi in coada
         minionPool.Enqueue(minion);
     }
 
-    // Modificarea funcției UpdateAttack()
     protected override void UpdateAttack()
     {
-        // 1. Verificăm limita (Pool-ul este gol? Sau verifici o altă limită?)
-        // Dacă vrei să menții limita maxMinions, o vei implementa cu o altă variabilă contor.
-        // Dar pentru pooling simplu, ne concentrăm pe timer.
+        float PlayerDistance = Vector3.Distance(playerTarget.position, transform.position);
+
+        if(PlayerDistance > attackRange)
+        {
+            currentState = EnemyState.Chase;
+            if (agent != null) agent.isStopped = false;
+            return;
+        }
 
         if (agent != null)
         {
@@ -81,7 +85,7 @@ public class MinionSpawner : EnemyBase
         {
             spawnTimer = 0f;
 
-            // Verificăm dacă pool-ul are minioni disponibili
+            // Verificam daca mai sunt minioni in pool
             if (minionPool.Count > 0)
             {
                 GetMinion();

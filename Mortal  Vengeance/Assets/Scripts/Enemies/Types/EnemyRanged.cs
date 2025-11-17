@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyRange : EnemyBase
+public class EnemyRanged : EnemyBase
 {
     private float lastAttackTime;
     [Header("Ranged Specific")]
@@ -8,30 +8,7 @@ public class EnemyRange : EnemyBase
     [SerializeField] private Transform firingPoint;
 
 
-    protected override void UpdateChase()
-    {
-        float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
-
-
-        if (distancePlayer > chaseRange)
-        {
-            currentState = EnemyState.Idle;
-            if (agent != null)
-                agent.isStopped = true;
-            return;
-        }
-
-        if (distancePlayer <= attackRange)
-        {
-            currentState = EnemyState.Attack;
-            if (agent != null)
-                agent.isStopped = true;
-            return;
-        }
-
-        if (agent != null) 
-            agent.SetDestination(playerTarget.position);
-    }
+   
     
 
 
