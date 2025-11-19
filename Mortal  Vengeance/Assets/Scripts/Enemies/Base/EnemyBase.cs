@@ -33,6 +33,10 @@ public class EnemyBase : MonoBehaviour
         {
             agent.speed = movementSpeed;
             agent.isStopped = true;
+
+            agent.stoppingDistance = attackRange;
+            agent.acceleration = agent.speed * 2;
+            agent.angularSpeed = 360f;
         }
 
         if(GameManager.instance != null)
@@ -70,6 +74,8 @@ public class EnemyBase : MonoBehaviour
     //Logica starii de urmarire
     protected virtual void UpdateChase()
     {
+        if (agent != null)
+            agent.isStopped = false;
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
 
 
@@ -95,14 +101,20 @@ public class EnemyBase : MonoBehaviour
     //Logica starii de atac
     protected virtual void UpdateAttack()
     {
+
+        if (agent != null)
+            agent.isStopped = true;
         //Inamicul se roteste spre jucator
         Vector3 lookDirection = playerTarget.position - transform.position;
 
         lookDirection.y = 0f;
 
-        Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+        if (lookDirection.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
 
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+        }
 
         //Verificam daca jucatorul iese din raza de atac
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
