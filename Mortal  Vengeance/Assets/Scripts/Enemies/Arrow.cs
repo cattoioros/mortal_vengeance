@@ -23,9 +23,4 @@ public class Arrow : MonoBehaviour
         myArcher.ReturnArrowToPool(gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
