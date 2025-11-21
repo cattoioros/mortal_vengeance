@@ -44,6 +44,10 @@ public class EnemyBase : MonoBehaviour
             playerTarget = GameManager.instance.PlayerTransform;
 
         }
+        else
+        {
+            Debug.Log("Nu avem instanta");
+        }
 
         if (playerTarget == null)
         {

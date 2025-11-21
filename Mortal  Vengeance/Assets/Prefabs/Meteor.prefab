@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 6518134579884150788}
   - component: {fileID: 666660042348891226}
   - component: {fileID: 3469494904996742731}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Meteor
-  m_TagString: Untagged
+  m_TagString: Meteor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -107,7 +107,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -152,3 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b783b2ee7c92e5449d8f3ec57b91656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Meteor
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64

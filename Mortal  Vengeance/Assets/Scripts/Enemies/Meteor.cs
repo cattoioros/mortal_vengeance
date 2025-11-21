@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Meteor : MonoBehaviour
 {
-
     private PromisedBoss myBoss;
+
     private float dmgRadius;
     private Vector3 impactPosition;
     private int damageAmount;
@@ -12,13 +12,13 @@ public class Meteor : MonoBehaviour
 
     private Rigidbody rb;
 
-    private void Start()
+    [SerializeField] private LayerMask groundLayer;
+
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        if (rb != null)
-            rb.isKinematic = true;
+        rb.isKinematic = true;
     }
-
 
     public void SetMeteor(Vector3 targetPos, float delay, int damage, float radius, PromisedBoss boss)
     {
@@ -27,42 +27,42 @@ public class Meteor : MonoBehaviour
         damageAmount = damage;
         dmgRadius = radius;
 
-        if (rb != null)
-            rb.isKinematic = true;
+        rb.isKinematic = true;
+        rb.linearVelocity = Vector3.zero;
 
         StartCoroutine(LaunchAfterDelay(delay));
     }
-
-
-
 
     private IEnumerator LaunchAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        if (rb != null) rb.isKinematic = false;
+        rb.isKinematic = false;
 
         Vector3 direction = (impactPosition - transform.position).normalized;
         rb.linearVelocity = direction * speed;
-
     }
+
 
     private void OnTriggerEnter(Collider other)
     {
-        Collider[] hitObjects = Physics.OverlapSphere(transform.position, dmgRadius);
+        if (other.CompareTag("Boss") || other.CompareTag("Meteor"))
+            return;
 
-        foreach (Collider hit in hitObjects)
+        if (((1 << other.gameObject.layer) & groundLayer) != 0)
         {
-            if (hit.TryGetComponent<PlayerHealthManager>(out var playerHealth))
+            Collider[] hitObjects = Physics.OverlapSphere(transform.position, dmgRadius);
+
+            foreach (Collider hit in hitObjects)
             {
-                playerHealth.TakeDamage(damageAmount);
+                if (hit.TryGetComponent<PlayerHealthManager>(out var playerHealth))
+                {
+                    playerHealth.TakeDamage(damageAmount);
+                    Debug.Log("Meteor: L-am lovit pe jucator!");
+                }
             }
+
+            myBoss?.ReturnMeteorToPool(gameObject);
         }
-
-        if (myBoss != null)
-            myBoss.ReturnMeteorToPool(gameObject);
-
     }
 }
-
-
