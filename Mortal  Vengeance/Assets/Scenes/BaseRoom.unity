@@ -246,11 +246,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!4 &86682586 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1994104556444200400, guid: 19842a56ef341f2428dcd5ff7e86eff6, type: 3}
-  m_PrefabInstance: {fileID: 735620309}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &429135992
 GameObject:
   m_ObjectHideFlags: 0
@@ -21579,7 +21574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32f5020879ba74b40af278f6dfcd5196, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
-  player: {fileID: 86682586}
+  player: {fileID: 1403870807}
   offset: {x: 0, y: 2, z: -2}
   rotationSpeed: 2000
   minYAngle: -50
