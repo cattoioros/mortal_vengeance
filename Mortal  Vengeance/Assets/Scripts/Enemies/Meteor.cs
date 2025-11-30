@@ -12,6 +12,8 @@ public class Meteor : MonoBehaviour
 
     private Rigidbody rb;
 
+
+    //Layer pentru hit
     [SerializeField] private LayerMask groundLayer;
 
     private void Awake()
@@ -22,11 +24,13 @@ public class Meteor : MonoBehaviour
 
     public void SetMeteor(Vector3 targetPos, float delay, int damage, float radius, PromisedBoss boss)
     {
+        //setare spawner, pozitie, dmg si raza de dmg
         myBoss = boss;
         impactPosition = targetPos;
         damageAmount = damage;
         dmgRadius = radius;
 
+        //dezactivarea fizicii
         rb.isKinematic = true;
         rb.linearVelocity = Vector3.zero;
 
@@ -39,6 +43,7 @@ public class Meteor : MonoBehaviour
 
         rb.isKinematic = false;
 
+        //directia catre zona de impact
         Vector3 direction = (impactPosition - transform.position).normalized;
         rb.linearVelocity = direction * speed;
     }
@@ -46,11 +51,14 @@ public class Meteor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //ignora coliziunile cu boss sau alti meteoriti
         if (other.CompareTag("Boss") || other.CompareTag("Meteor"))
             return;
 
+        //verificam daca loveste pamantul
         if (((1 << other.gameObject.layer) & groundLayer) != 0)
         {
+            //luam raza de coliziuni si aplicam dmg-ul in cazul jucatorului
             Collider[] hitObjects = Physics.OverlapSphere(transform.position, dmgRadius);
 
             foreach (Collider hit in hitObjects)

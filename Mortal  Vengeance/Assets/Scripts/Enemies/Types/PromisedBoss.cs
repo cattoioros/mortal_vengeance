@@ -23,10 +23,13 @@ public class PromisedBoss : EnemyBase
     [SerializeField] private GameObject meteorPrefab;
     [SerializeField] private int dmgFall;
 
+    //flag atac dat o singura data la jumatate din viata
     private bool is50Used = false;
     
+    //pool pentru meteoriti
     private Queue<GameObject> meteorPool = new Queue<GameObject>();
 
+    //enum cu combo-urile
     private enum AttackStart
     {
         None,
@@ -40,14 +43,15 @@ public class PromisedBoss : EnemyBase
 
     }
 
+    //combo-ul curent al boss-ului
     private AttackStart CurrentCombo = AttackStart.None;
-    private int step = 0;
 
-
+    //atac GroundStomp
     private IEnumerator PerformGroundStomp()
     {
         Debug.Log("Boss: Incep Stomp-ul de la sol.");
 
+        
         yield return new WaitForSeconds(0.5f);
 
         Collider[] hitPlayers = Physics.OverlapSphere(transform.position, 1.5f); 
@@ -64,6 +68,7 @@ public class PromisedBoss : EnemyBase
         yield return new WaitForSeconds(1.0f);
     }
 
+    //miscare pana la un anumit punct
     IEnumerator PerformMove(Vector3 targetPos, float duration)
     {
         Vector3 startPos = transform.position;
@@ -78,19 +83,24 @@ public class PromisedBoss : EnemyBase
 
         transform.position = targetPos;
     }
+
+    //atac meteoriti
     IEnumerator PerformMeteors()
     {
         yield return PerformGroundStomp();
 
-        Vector3 positionUp = new Vector3(transform.position.x, transform.position.y + meteorSpawnHeight, transform.position.z);
 
+        //boss-ul se ridica
+        Vector3 positionUp = new Vector3(transform.position.x, transform.position.y + meteorSpawnHeight, transform.position.z);
 
         yield return PerformMove(positionUp,2f);
 
         Debug.Log("Meteoriti spawning");
 
         Vector3 playerPos = playerTarget.position;
+        
 
+        //incepe spawn-ul de meteoriti
         for (int i = 0; i < nrMeteors; i++)
         {
             float angle = i * Mathf.PI * 2 / nrMeteors;
@@ -118,17 +128,20 @@ public class PromisedBoss : EnemyBase
         
         yield return new WaitForSeconds(meteorDelayTime + 3f);
 
+
+        //revine jos
         Vector3 positionDown = new Vector3(transform.position.x, transform.position.y - meteorSpawnHeight, transform.position.z);
 
         yield return PerformMove(positionDown, 2f);
 
 
         CurrentCombo = AttackStart.None;
-        step = 0;
 
 
     }
 
+
+    //atac charge, boss-ul sare, se duce spre jucator si apoi coboara aplicand daune
     IEnumerator PerformCharge()
     {
         Vector3 jumpPosition = new Vector3(transform.position.x,transform.position.y + 2f, transform.position.z);
@@ -157,23 +170,24 @@ public class PromisedBoss : EnemyBase
 
     }
 
+    //combo meteoriti
     IEnumerator ExecuteMeteorsCombo()
     {
         yield return StartCoroutine(PerformMeteors());
 
         CurrentCombo = AttackStart.None;
-        step = 0;
     }
 
+    //charge combo
     IEnumerator ExecuteChargeCombo()
     {
         yield return StartCoroutine(PerformCharge());
 
         CurrentCombo = AttackStart.None;
-        step = 0;
     }
 
 
+    //atac in fata cu miscare
     IEnumerator ForwardThrust(float distance, float dashTime)
     {
         Debug.Log("Incep forward thrust");
@@ -236,6 +250,7 @@ public class PromisedBoss : EnemyBase
         }
     }
 
+    //atac de tip sweep
     IEnumerator SweepSlash(float duration, float dmg, float start, float final)
     {
         Debug.Log("Incepem slash atac");
@@ -246,6 +261,8 @@ public class PromisedBoss : EnemyBase
         while (t < duration)
         {
             t += Time.deltaTime;
+
+            //in functie de start,final decidem unghiul de atac
 
             float angle = Mathf.Lerp(start, final, t / duration);
             Vector3 dir = Quaternion.Euler(0, angle, 0) * transform.forward;
@@ -281,8 +298,8 @@ public class PromisedBoss : EnemyBase
     {
         yield return StartCoroutine(PerformExplodeSlash());
 
+
         CurrentCombo = AttackStart.None;
-        step = 0;
     }
 
 
@@ -337,7 +354,6 @@ public class PromisedBoss : EnemyBase
                 if(Random.value < 0.5f)
                 {
                     CurrentCombo = AttackStart.None;
-                    step = 0;
                     yield break;
                 }
                 else
@@ -355,7 +371,6 @@ public class PromisedBoss : EnemyBase
             }
 
             CurrentCombo = AttackStart.None;
-            step = 0;
         }
 
 
@@ -374,7 +389,7 @@ public class PromisedBoss : EnemyBase
         yield return StartCoroutine(SweepSlash(1, baseDmg, -60f,60f));
     }
 
-
+    //bossul se roteste cu sabiile aplicand daune de 2 ori
     IEnumerator Perform2SpinningSlashes(float spinDuration, float dmg)
     {
         Debug.Log("Start spin ");
@@ -387,6 +402,7 @@ public class PromisedBoss : EnemyBase
         {
             t += Time.deltaTime;
 
+            //rotirea
             float rotationStep = (720f / spinDuration) * Time.deltaTime;
             transform.Rotate(0, rotationStep, 0);
 
@@ -471,15 +487,14 @@ public class PromisedBoss : EnemyBase
             else
             {
                 CurrentCombo = AttackStart.None;
-                step = 0;
                 yield break;
             }
 
             CurrentCombo = AttackStart.None;
-            step = 0;
+
         }
 
-
+    //jucatorul este tras catre boss
     IEnumerator PerformAoeDrag(float dragDuration, float AoeRadius, float dragStrenght)
     {
         Vector3 center = transform.position;
@@ -521,11 +536,10 @@ public class PromisedBoss : EnemyBase
 
             yield return new WaitForSeconds(1.5f);
 
-            //yield return StartCoroutine(PerformExplosion());
+            yield return StartCoroutine(PerformGroundStomp());
 
 
             CurrentCombo = AttackStart.None;
-            step = 0;
 
         
         }
