@@ -6,16 +6,31 @@ public class PlayerMovement : MonoBehaviour
     InputAction moveAction;
 
     Vector2 moveRead;
+    [SerializeField] private Collider hitbox;
+
 
     [SerializeField]
     public float speed = 5;
     public float rotationSpeed = 0.1f;
+    
 
 
-    void Start()
+void Start()
+{
+    moveAction = InputSystem.actions.FindAction("Move");
+
+    if(hitbox != null)
     {
-        moveAction = InputSystem.actions.FindAction("Move");
+        Rigidbody rb = hitbox.GetComponent<Rigidbody>();
+        if(rb == null)
+        {
+            rb = hitbox.gameObject.AddComponent<Rigidbody>();
+            rb.isKinematic = true; 
+        }
+
+        hitbox.isTrigger = true;
     }
+}
 
     // Update is called once per frame
     void Update()

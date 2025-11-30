@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 
 
 //Starile inamicilor
 public enum EnemyState { Idle, Chase, Attack, Dead}
 
-public class EnemyBase : MonoBehaviour
+public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 {
     //Caracteristici de baza ale tuturor inamicilor
     [Header("Stats & Ranges")]
@@ -122,6 +123,7 @@ public class EnemyBase : MonoBehaviour
     public virtual void TakeDamage(int amount)
     {
         currentHealth -= amount;
+        Debug.Log("Am luat damage"+ amount);
 
         if (currentHealth <= 0)
         {
