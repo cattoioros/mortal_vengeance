@@ -6,6 +6,8 @@ using UnityEngine.AI;
 //Starile inamicilor
 public enum EnemyState { Idle, Chase, Attack, Dead}
 
+
+
 public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 {
     //Caracteristici de baza ale tuturor inamicilor
@@ -20,7 +22,8 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     protected int currentHealth; 
     protected EnemyState currentState = EnemyState.Idle;
     protected NavMeshAgent agent; 
-    protected Transform playerTarget; 
+    protected Transform playerTarget;
+    protected Animator animator;
 
     protected virtual void Start()
     {
@@ -102,6 +105,15 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 
         if (agent != null)
             agent.SetDestination(playerTarget.position);
+
+        if (agent != null && animator != null)
+        {
+            // currentSpeed este viteza pe care o folosește NavMeshAgent-ul
+            float currentSpeed = agent.velocity.magnitude;
+
+            // Setează parametrul "Speed" în Animator
+            animator.SetFloat("Speed", currentSpeed);
+        }
     }
     //Logica starii de atac
     protected virtual void UpdateAttack()
@@ -186,6 +198,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
                 UpdateAttack();
                 break;
         }
+
         
     }
 
