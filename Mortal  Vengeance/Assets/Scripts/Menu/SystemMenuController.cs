@@ -41,4 +41,9 @@ public class SystemMenuController : MonoBehaviour
         Time.timeScale = 1f; //repornesc jocul
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //reincarc scena curenta
     }
+
+    public void Settings()
+    {
+        Debug.Log("Settings button clicked");
+    }
 }
