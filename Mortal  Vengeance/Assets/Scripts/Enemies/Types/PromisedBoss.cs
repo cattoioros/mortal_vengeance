@@ -26,8 +26,21 @@ public class PromisedBoss : EnemyBase
     [SerializeField] private GameObject meteorPrefab;
     [SerializeField] private int dmgFall;
 
+
+    [Header("VisualIndicators")]
+    [SerializeField] private GameObject GroundDmgIndicator;
+    [SerializeField] private GameObject SphereDmgIndicator;
+    [SerializeField] private GameObject explosionIndicator;
+    [SerializeField] private GameObject descentExplosionFx;
+
+
+    [Header("Audio")]
+    public BossAudioController audioController; 
+
     //flag atac dat o singura data la jumatate din viata
     private bool is50Used = false;
+
+    public BossLightHalfHealth light;
 
     
     //pool pentru meteoriti
@@ -47,6 +60,15 @@ public class PromisedBoss : EnemyBase
         weaponHitbox.DeactivateHitbox();
     }
 
+
+    public void PlaySwingSound()
+    {
+        if (audioController != null)
+        {
+            audioController.playSwordSwing();
+        }
+    }
+
     //enum cu combo-urile
     private enum AttackStart
     {
@@ -58,6 +80,7 @@ public class PromisedBoss : EnemyBase
         FrontFlip,
         DoubleSweep,
         RightSweep,
+        HalfHealth,
 
     }
 
@@ -70,17 +93,27 @@ public class PromisedBoss : EnemyBase
     //atac GroundStomp
     private IEnumerator PerformGroundStomp()
     {
-        Debug.Log("Boss: Incep Stomp-ul de la sol.");
 
+        float dmgRadius = 1.5f; 
         
-        yield return new WaitForSeconds(0.5f);
 
-        Collider[] hitPlayers = Physics.OverlapSphere(transform.position, 1.5f); 
+        Debug.Log("Boss: Incep Stomp-ul de la sol.");
+        GameObject dmgSphereZone = Instantiate(SphereDmgIndicator, agent.transform);
+        dmgSphereZone.transform.localPosition = new Vector3(0,1f,0);
+        dmgSphereZone.transform.localScale = Vector3.one * (dmgRadius *2);
+
+
+        yield return new WaitForSeconds(1f);
+
+        Destroy(dmgSphereZone);
+
+        Collider[] hitPlayers = Physics.OverlapSphere(transform.position, dmgRadius); 
         foreach (var hit in hitPlayers)
         {
             if (hit.TryGetComponent<PlayerHealthManager>(out var playerHealth))
             {
-                playerHealth.TakeDamage(baseDmg / 3); 
+                playerHealth.TakeDamage(baseDmg / 3);
+                Debug.Log("Am nimerit cu GroundStomp");
             }
         }
         Debug.Log("Boss: Daune mici aplicate. Trec in aer.");
@@ -90,15 +123,11 @@ public class PromisedBoss : EnemyBase
     }
 
     //miscare pana la un anumit punct
-    IEnumerator PerformMove(Vector3 targetPos, float duration)
+    IEnumerator PerformMove(Vector3 targetPos, float speed)
     {
-        Vector3 startPos = transform.position;
-        float t = 0;
-
-        while (t < duration)
+        while (Vector3.Distance(transform.position, targetPos) > 0.1f)
         {
-            t += Time.deltaTime;
-            transform.position = Vector3.Lerp(startPos, targetPos, t / duration);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
             yield return null;
         }
 
@@ -120,7 +149,7 @@ public class PromisedBoss : EnemyBase
         //boss-ul se ridica
         Vector3 positionUp = new Vector3(transform.position.x, transform.position.y + meteorSpawnHeight, transform.position.z);
 
-        yield return PerformMove(positionUp,1f);
+        yield return PerformMove(positionUp,8f);
 
         Debug.Log("Meteoriti spawning");
 
@@ -158,14 +187,21 @@ public class PromisedBoss : EnemyBase
         {
             animator.SetTrigger("TriggerMeteors");
         }
+
+        yield return new WaitForSeconds(0.5f);
         
+        if(audioController != null)
+        {
+            audioController.playMeteorsCue();
+        }
+
         yield return new WaitForSeconds(3f);
 
 
         //revine jos
         Vector3 positionDown = new Vector3(transform.position.x, transform.position.y - meteorSpawnHeight, transform.position.z);
 
-        yield return PerformMove(positionDown, 2f);
+        yield return PerformMove(positionDown, 12f);
 
 
         CurrentCombo = AttackStart.None;
@@ -186,11 +222,11 @@ public class PromisedBoss : EnemyBase
 
         Vector3 chargePosition = new Vector3(playerTarget.position.x, jumpPosition.y, playerTarget.position.z);
 
-        yield return PerformMove(chargePosition, 1.2f);
+        yield return PerformMove(chargePosition, 5f);
 
         Vector3 plungePosition = new Vector3(transform.position.x,transform.position.y - 2f, transform.position.z);
 
-        yield return PerformMove(plungePosition, 1f);
+        yield return PerformMove(plungePosition, 7f);
 
         Collider[] hitPlayers = Physics.OverlapSphere(transform.position, 1.5f);
 
@@ -220,6 +256,7 @@ public class PromisedBoss : EnemyBase
         if (agent != null)
         {
             agent.isStopped = true;
+            agent.updatePosition = false;
         }
 
         if (animator != null)
@@ -228,6 +265,12 @@ public class PromisedBoss : EnemyBase
         }
 
         yield return StartCoroutine(PerformCharge());
+
+        if (agent != null)
+        {
+            agent.isStopped = false;
+            agent.updatePosition = true;
+        }
 
         CurrentCombo = AttackStart.None;
     }
@@ -268,9 +311,27 @@ public class PromisedBoss : EnemyBase
     IEnumerator DelayedExplosionDamage(Vector3 center, float radius, float dmg)
     {
         Debug.Log("Incepem explozia");
+
+
+        GameObject SphereZone = Instantiate(SphereDmgIndicator);
+        SphereZone.transform.position = center;
+        SphereZone.transform.localScale = Vector3.one * (2 * radius);
+        SphereZone.transform.rotation = Quaternion.identity;
+
+
         yield return new WaitForSeconds(1f);
+        Destroy(SphereZone);
+        GameObject ExplosionZone = Instantiate(explosionIndicator);
+        ExplosionZone.transform.position = center;
+        ExplosionZone.transform.localScale = Vector3.one * (2 * radius);
+        ExplosionZone.transform.rotation = Quaternion.identity;
+
+        audioController.playExplosionCue();
 
         Collider[] hits = Physics.OverlapSphere(center, radius);
+
+        
+        Destroy(ExplosionZone, 2f);
 
         foreach (var hit in hits)
         {
@@ -282,43 +343,16 @@ public class PromisedBoss : EnemyBase
         }
     }
 
-    //atac de tip sweep
-    IEnumerator SweepSlash(float duration, float dmg, float start, float final)
-    {
-        Debug.Log("Incepem slash atac");
-
-        float t = 0f;
-        float radius = 2f;
-
-        while (t < duration)
-        {
-            t += Time.deltaTime;
-
-            //in functie de start,final decidem unghiul de atac
-
-            float angle = Mathf.Lerp(start, final, t / duration);
-            Vector3 dir = Quaternion.Euler(0, angle, 0) * transform.forward;
-
-            Debug.DrawRay(transform.position, dir * radius, Color.red);
-
-            if (Physics.Raycast(transform.position, dir, out var hit, radius))
-            {
-                if (hit.collider.TryGetComponent<PlayerHealthManager>(out var player))
-                {
-                    player.TakeDamage(dmg);
-                }
-            }
-
-            yield return null;
-        }
-    }
-
 
     IEnumerator PerformExplodeSlash()
     {
         yield return StartCoroutine(PerformForwardThrustAttack());
 
         Vector3 thrustCenter = transform.position + transform.forward * 1.2f;
+        
+
+
+        
 
         yield return StartCoroutine(DelayedExplosionDamage(thrustCenter, 2.5f, baseDmg * 2));
 
@@ -341,19 +375,54 @@ public class PromisedBoss : EnemyBase
         Debug.Log("Incepem saritura");
 
         if (agent != null)
+        {
             agent.isStopped = true;
+            agent.updatePosition = false; 
+                     
+        }
+
 
         Vector3 AscendPosition = new Vector3(transform.position.x, transform.position.y + 100f, transform.position.z);
 
         transform.position = AscendPosition;
 
-        Debug.Log("Incepem coborarea");
+   
 
+       
         Vector3 DescendPosition = playerTarget.position;
 
         yield return new WaitForSeconds(5f);
 
-        yield return StartCoroutine(PerformMove(DescendPosition,5f));
+        Debug.Log("Incepem coborarea");
+
+        if (light != null)
+        {
+            light.StartDescent();
+        }
+
+        if (audioController != null)
+        {
+            audioController.playDescentSound();
+        }
+
+
+
+        yield return StartCoroutine(PerformMove(DescendPosition,40f));
+        if (light != null)
+        {
+            light.StopDescent();
+        }
+
+        if(audioController!=null)
+        {
+            audioController.playDescentCrash();
+        }
+
+        GameObject dangerZone = Instantiate(descentExplosionFx,transform);
+        dangerZone.transform.localPosition = Vector3.zero;
+        dangerZone.transform.localScale = Vector3.one * (15f * 2f);
+
+        Destroy(dangerZone,3f);
 
         Collider[] hits = Physics.OverlapSphere(DescendPosition, 15f);
 
@@ -362,12 +431,18 @@ public class PromisedBoss : EnemyBase
             if(hit.TryGetComponent<PlayerHealthManager>(out var playerHealth))
             {
                 playerHealth.TakeDamage(dmgFall);
-                Debug.Log("Meteor explosion hit player");
+                Debug.Log("Descent Explosion hit player");
             }
         }
 
         if (agent != null)
+        {
             agent.isStopped = false;
+            agent.updatePosition = true;
+            agent.enabled = true;
+        }
+
+        CurrentCombo = AttackStart.None;
     }
 
 
@@ -442,17 +517,17 @@ public class PromisedBoss : EnemyBase
             animator.SetTrigger("TriggerSlashLR");
         }
 
+        
+
         yield return new WaitForSeconds(2.0f);
-
-
 
 
     }
 
-
-    public void ApplyGroundSlamDmg()
+    IEnumerator DmgGroundSlamSeq()
     {
-        Debug.Log("Sincronizare: Aplica daune Sabie + Shockwave.");
+        Debug.Log("Aplica daune Sabie + Shockwave.");
+
 
         Vector3 box = transform.position + transform.forward * 1.5f;
         Vector3 extend = new Vector3(1f, 1f, 2f);
@@ -467,8 +542,16 @@ public class PromisedBoss : EnemyBase
             }
         }
 
+
         Vector3 boxGround = transform.position + transform.forward * 4f;
         Vector3 extendGround = new Vector3(3f, 2f, 4f);
+        GameObject dangerZone = Instantiate(GroundDmgIndicator, boxGround, transform.rotation);
+        dangerZone.transform.localScale = new Vector3(0.4f, 0.0001f, 0.65f);
+
+        yield return new WaitForSeconds(1.5f);
+
+        audioController.GroundExplodeCue();
+
         Collider[] hitsGround = Physics.OverlapBox(boxGround, extendGround, transform.rotation);
 
         foreach (var hit in hitsGround)
@@ -479,6 +562,12 @@ public class PromisedBoss : EnemyBase
                 Debug.Log("Lovit de shockwave");
             }
         }
+
+        Destroy(dangerZone);
+    }
+    public void ApplyGroundSlamDmg()
+    {
+        StartCoroutine(DmgGroundSlamSeq());
     }
 
     IEnumerator ExecuteDoubleSweepCombo()
@@ -507,6 +596,7 @@ public class PromisedBoss : EnemyBase
         {
             Debug.Log("Incepem Drag-ul");
             t += Time.deltaTime;
+
 
             Collider[] hits = Physics.OverlapSphere(center, AoeRadius);
 
@@ -630,7 +720,7 @@ public class PromisedBoss : EnemyBase
 
         int choice = 0;
 
-        if (animator != null && agent!= null)
+        if (animator != null && agent != null)
         {
             float speed = agent.velocity.magnitude;
 
@@ -640,15 +730,16 @@ public class PromisedBoss : EnemyBase
 
         if (CurrentCombo == AttackStart.None)
         {
-            if (!is50Used && currentHealth <= maxHealth / 2)
+
+            if ((!is50Used && currentHealth <= maxHealth / 2))
             {
+                CurrentCombo = AttackStart.HalfHealth;
                 StartCoroutine(PerformAsteroidDescent());
                 is50Used = true;
             }
             else if (PlayerDistance > rangeAttackDistance)
             {
-                choice = 0;
-                Debug.Log(choice);
+                choice = Random.Range(0, 4);
 
                 switch (choice)
                 {
@@ -680,8 +771,7 @@ public class PromisedBoss : EnemyBase
             }
             else
             {
-                choice = 2;
-
+                choice = Random.Range(0,4);
                 switch (choice)
                 {
                     case 0:

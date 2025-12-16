@@ -1,3 +1,4 @@
+using NUnit.Framework.Interfaces;
 using UnityEngine;
 
 public class EnemyMelee2 : EnemyBase
@@ -5,32 +6,57 @@ public class EnemyMelee2 : EnemyBase
     private float lastAttackTime;
 
 
-    protected override void AttackLogic()
+
+    public void AttackDmg()
     {
-        if (Time.time > lastAttackTime + attackCooldown)
+        float lowerHeight = 1.2f; 
+        float radius = 0.3f;      
+
+        Vector3 origin = transform.position + Vector3.up * lowerHeight;
+
+        RaycastHit hit;
+
+        if (Physics.SphereCast(origin, radius, transform.forward, out hit, attackRange))
         {
-            lastAttackTime = Time.time;
-
-            Vector3 rayOrigin = transform.position;
-            Vector3 rayDirection = transform.forward;
-            float rayLength = attackRange; 
-
-            RaycastHit hit; 
-
-
-            if (Physics.Raycast(rayOrigin, rayDirection, out hit, rayLength))
+            if (hit.collider.TryGetComponent<PlayerHealthManager>(out var playerHealth))
             {
-
-
-                if (hit.collider.TryGetComponent<PlayerHealthManager>(out var playerHealth))
-                {
-                    playerHealth.TakeDamage(baseDmg);
-                }
+                playerHealth.TakeDamage(baseDmg);
+                Debug.Log($"{gameObject.name} a lovit jucatorul la nivelul pieptului!");
             }
-            Debug.Log("Atac melee linie");
         }
 
-       
+    }
+
+
+
+    public void EndAttack()
+    {
+        isAttacking = false;
+    }
+
+
+    protected override void AttackLogic()
+    {
+
+        if (isAttacking) return;
+
+
+        if (Time.time > lastAttackTime + attackCooldown)
+        {
+            isAttacking = true;
+            agent.isStopped = true;
+            lastAttackTime = Time.time;
+
+            if (animator != null)
+            {
+                animator.SetTrigger("TriggerAttack");
+                
+            }
+
+            
+
+
+        }
     }
 }
 

@@ -24,6 +24,9 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     protected NavMeshAgent agent; 
     protected Transform playerTarget;
     protected Animator animator;
+    protected bool isAttacking = false;
+    protected bool isDead = false;
+
 
     protected virtual void Start()
     {
@@ -58,7 +61,13 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
             Debug.LogError(gameObject.name + " nu a putut gasi jucătorul prin GameManager.");
         }
 
-     
+
+        animator = GetComponentInChildren<Animator>(); // <- asta lipsea
+
+        if (animator == null)
+            Debug.LogError(name + " nu are animator");
+
+
 
     }
 
@@ -67,6 +76,9 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     {
         if (agent != null)
             agent.isStopped = true;
+
+        if (animator != null)
+            animator.SetFloat("Speed", 0);
 
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
 
@@ -120,7 +132,14 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     {
 
         if (agent != null)
+        {
             agent.isStopped = true;
+            agent.velocity = Vector3.zero;
+            agent.ResetPath();
+            animator.SetFloat("Speed", 0f);
+
+        }
+
         //Inamicul se roteste spre jucator
         Vector3 lookDirection = playerTarget.position - transform.position;
 
@@ -153,8 +172,9 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
         currentHealth -= amount;
         Debug.Log("Am luat damage"+ amount);
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && !isDead )
         {
+            isDead = true;
             Die();
         }
     }
@@ -168,10 +188,14 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
             agent.enabled = false;
         }
 
+        if(animator!= null)
+        {
+            animator.SetTrigger("TriggerDeath");
+        }
+
         Debug.Log(gameObject.name + "a murit");
 
-        Destroy(gameObject,3f);
-
+        Destroy(gameObject, 5f);
        
 
     }
@@ -181,9 +205,11 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     // Update is called once per frame
     protected virtual void Update()
     {
-
+        //Debug.Log(currentState);
         if (playerTarget == null || currentState == EnemyState.Dead)
             return;
+
+        if (isAttacking) return;
 
         //Schimbarea intre stari
         switch (currentState)

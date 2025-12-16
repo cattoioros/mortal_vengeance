@@ -796,6 +796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb07ddd0d7977f64f8857ac2bc46499b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  hitbox: {fileID: 0}
   speed: 5
   rotationSpeed: 10
 --- !u!1 &597064845

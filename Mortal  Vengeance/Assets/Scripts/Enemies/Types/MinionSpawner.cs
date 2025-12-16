@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MinionSpawner : EnemyBase
 {
@@ -64,8 +65,25 @@ public class MinionSpawner : EnemyBase
         minionPool.Enqueue(minion);
     }
 
+
+    public void spawnMinion()
+    {
+        // Verificam daca mai sunt minioni in pool
+            if (minionPool.Count > 0)
+            {
+                GetMinion();
+            }
+            else
+            {
+                initPool(1);
+            }
+    }
+
     protected override void UpdateAttack()
     {
+        if(agent != null) agent.isStopped = true;
+
+        animator.SetFloat("Speed", 0);
         float PlayerDistance = Vector3.Distance(playerTarget.position, transform.position);
 
         if(PlayerDistance > attackRange)
@@ -84,12 +102,9 @@ public class MinionSpawner : EnemyBase
         if (spawnTimer >= spawnRate)
         {
             spawnTimer = 0f;
+            if (animator != null) animator.SetTrigger("TriggerAttack");
 
-            // Verificam daca mai sunt minioni in pool
-            if (minionPool.Count > 0)
-            {
-                GetMinion();
-            }
+
         }
     }
 
