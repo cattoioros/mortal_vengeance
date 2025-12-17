@@ -17,6 +17,9 @@ public class InventoryToggle : MonoBehaviour
     
     void Update()
     {
+        if (SystemMenuController.IsUIBlockingInput)//prevents opening the inventory if another menu is open
+            return;
+
         if (Input.GetKeyDown(KeyCode.Tab)) {
             ToggleInventory();
         }
