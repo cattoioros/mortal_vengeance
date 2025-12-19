@@ -12,14 +12,34 @@ public class InventorySlot : MonoBehaviour
 
     [Header("Slot Info")]
     public SlotType slotType;
-    public int index;   //index of the slot in its respective panel
+    public int index;
 
-    [Header("UI Elements")]
+    [Header("UI")]
     public Image icon;
 
-    //is called when the slot must be visually updated
-    public void Refresh()
+    private ItemData currentItem;
+
+    public void SetItem(ItemData item)
     {
-        icon.enabled = false; //for now, the icon is disabled because there are no items implemented yet
+        currentItem = item;
+
+        if (item == null)
+        {
+            icon.enabled = false;
+            return;
+        }
+
+        icon.gameObject.SetActive(true);
+        icon.sprite = item.icon;
+        icon.color = Color.white; 
+        icon.enabled = true;
+    }
+
+
+
+    public void Clear()
+    {
+        currentItem = null;
+        icon.enabled = false;
     }
 }
