@@ -13,7 +13,7 @@ public class InventoryUIManager : MonoBehaviour
     private InventorySlot[] inventorySlots;
     public ItemData debugTestItem;
 
-
+    //called before Start()
     void Awake()
     {
         GenerateEquipmentSlots();
@@ -21,45 +21,38 @@ public class InventoryUIManager : MonoBehaviour
         GenerateHotbarSlots();
     }
 
+    // create 5 slots for equipment panel
     void GenerateEquipmentSlots()
     {
         for (int i = 0; i < 5; i++)
         {
-            InventorySlot slot = CreateSlot(equipmentPanel, i, InventorySlot.SlotType.Equipment);
-            slot.Clear();
+            InventorySlot slot = CreateSlot(equipmentPanel, i, InventorySlot.SlotType.Equipment);//the slot is created
+            slot.Clear(); //slot is empty at the begining
         }
     }
 
+    //create 27 slots for inventory panel
     void GenerateInventorySlots()
     {
         Debug.Log("GenerateInventorySlots CALLED");
 
         for (int i = 0; i < 27; i++)
         {
-            GameObject slot = Instantiate(slotPrefab, inventoryGrid);
+            InventorySlot slot = CreateSlot(inventoryGrid,i,InventorySlot.SlotType.Inventory
+            );
 
-            InventorySlot slotComp = slot.GetComponent<InventorySlot>();
+            slot.Clear();
 
-            if (slotComp == null)
-            {
-                Debug.LogError("InventorySlot component MISSING on prefab!");
-                continue;
-            }
-
-            slotComp.index = i;
-            slotComp.slotType = InventorySlot.SlotType.Inventory;
-            slotComp.Clear();
-
-            
+            //placed an item in the first slot(testing)
             if (i == 0 && debugTestItem != null)
             {
-                Debug.Log("Calling SetItem on slot 0");
-                slotComp.SetItem(debugTestItem);
+                slot.SetItem(debugTestItem);
             }
         }
     }
 
 
+    //create 9 slots for hotbar panel
     void GenerateHotbarSlots()
     {
         for (int i = 0; i < 9; i++)
@@ -81,19 +74,10 @@ public class InventoryUIManager : MonoBehaviour
     }
 
     
+    //useless for now
     public InventorySlot[] GetInventorySlots()
     {
         return inventorySlots;
-    }
-
-    public void DebugAddItemToFirstSlot(ItemData item)
-    {
-        InventorySlot[] slots = inventoryGrid.GetComponentsInChildren<InventorySlot>();
-
-        if (slots.Length > 0 && item != null)
-        {
-            slots[0].SetItem(item);
-        }
     }
 
 }
