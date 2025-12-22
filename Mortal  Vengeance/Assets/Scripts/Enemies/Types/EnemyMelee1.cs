@@ -4,6 +4,9 @@ public class EnemyMelee1 : EnemyBase
 {
     private float lastAttackTime;
 
+    [Header("Audio")]
+    public MeleeAudioController audioController;
+
     public void AttackDmg()
     {
         Vector3 playerDirection = playerTarget.position - transform.position;
@@ -24,6 +27,14 @@ public class EnemyMelee1 : EnemyBase
     public void AttackEnd()
     {
         isAttacking = false;
+    }
+
+    public void AttackAudio()
+    {
+        if(audioController!=null)
+        {
+            audioController.playSwordAttack();
+        }
     }
 
 

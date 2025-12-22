@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,6 +9,10 @@ public class MinionSpawner : EnemyBase
     [SerializeField] private float spawnRate = 0.8f;
     [SerializeField] private GameObject minionPrefab;
     [SerializeField] private int initialPoolSize = 5;
+
+
+    [Header("Audio")]
+    public SpawnerAudioController audioController;
 
 
     private float spawnTimer = 0f;
@@ -77,6 +82,11 @@ public class MinionSpawner : EnemyBase
             {
                 initPool(1);
             }
+
+        if (audioController != null)
+        {
+            audioController.playSpawnMinion();
+        }
     }
 
     protected override void UpdateAttack()

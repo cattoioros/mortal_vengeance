@@ -42,6 +42,9 @@ public class EnemyRanged : EnemyBase
     [Header("ARROW")]
     public GameObject arrowInHand;
 
+    [Header("Audio")]
+    public RangedAudioController audioController;
+
 
 
 
@@ -141,6 +144,11 @@ public class EnemyRanged : EnemyBase
 
         punctLoadSageata.localPosition = pozLoadSageata;
 
+        if (audioController != null)
+        {
+            audioController.playLoadBow();
+        }
+
         float t = 0;
         while(t <1)
         {
@@ -172,6 +180,11 @@ public class EnemyRanged : EnemyBase
         Arrow arrowScript = readyArrow.GetComponent<Arrow>();
 
         arrowScript.setArcher(this);
+
+        if(audioController != null)
+        {
+            audioController.playShootBow();
+        }
 
         StartCoroutine(ReleaseBow(0.2f));
     }

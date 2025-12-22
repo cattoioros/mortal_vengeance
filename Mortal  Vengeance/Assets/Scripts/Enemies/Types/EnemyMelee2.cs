@@ -5,7 +5,8 @@ public class EnemyMelee2 : EnemyBase
 {
     private float lastAttackTime;
 
-
+    [Header("Audio")]
+    public MeleeAudioController audioController;
 
     public void AttackDmg()
     {
@@ -32,6 +33,14 @@ public class EnemyMelee2 : EnemyBase
     public void EndAttack()
     {
         isAttacking = false;
+    }
+
+    public void AttackAudio()
+    {
+        if (audioController != null)
+        {
+            audioController.playSwordAttack();
+        }
     }
 
 

@@ -27,7 +27,7 @@ public class PromisedBoss : EnemyBase
     [SerializeField] private int dmgFall;
 
 
-    [Header("VisualIndicators")]
+    [Header("Visual Indicators")]
     [SerializeField] private GameObject GroundDmgIndicator;
     [SerializeField] private GameObject SphereDmgIndicator;
     [SerializeField] private GameObject explosionIndicator;
@@ -40,13 +40,14 @@ public class PromisedBoss : EnemyBase
     //flag atac dat o singura data la jumatate din viata
     private bool is50Used = false;
 
+    [Header("Light")]
     public BossLightHalfHealth light;
 
     
     //pool pentru meteoriti
     private Queue<GameObject> meteorPool = new Queue<GameObject>();
 
-
+    [Header("WeaponHitbox")]
     public WeaponHitbox weaponHitbox;
 
     public void ActivateWeaponHitbox()
