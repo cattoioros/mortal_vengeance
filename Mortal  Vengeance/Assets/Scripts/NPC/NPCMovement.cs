@@ -6,18 +6,40 @@ public class NPCMovement : MonoBehaviour
     public float changeDirectionTime;
     private Vector3 direction;
     private float timer;
-    
+    public float rotationSpeed;
+    private Rigidbody rb;
+
+
+
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         ChooseNewDirection();
+    }
+
+    void FixedUpdate()
+    {
+        // move using Rigidbody (collision aware)
+        Vector3 movement = direction * moveSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(rb.position + movement);
+
+        // rotate NPC to face the movement direction
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            rb.MoveRotation(
+                Quaternion.Slerp(
+                    rb.rotation,
+                    targetRotation,
+                    rotationSpeed * Time.fixedDeltaTime
+                )
+            );
+        }
     }
 
     void Update()
     {
-        //move NPC in the current direction
-        transform.Translate(direction * moveSpeed * Time.deltaTime, Space.World);
-
-        //decrese timer
+        // decrease timer (logic)
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
