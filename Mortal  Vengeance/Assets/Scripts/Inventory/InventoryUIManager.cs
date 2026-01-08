@@ -11,14 +11,10 @@ public class InventoryUIManager : MonoBehaviour
     public GameObject slotPrefab;
 
     private InventorySlot[] inventorySlots;
-    public ItemData debugTestItem;
 
     void Start()
     {
-        if (debugTestItem != null)
-        {
-            AddItem(debugTestItem);
-        }
+        
     }
 
     //called before Start()
