@@ -80,4 +80,11 @@ public class InventorySlot : MonoBehaviour,
 
         InventorySystem.Instance.OnSlotDropped(InventoryDragHandler.Instance.SourceSlot,this);
     }
+
+
+    public bool IsEmpty()
+    {
+        return currentItem == null;
+    }
+
 }

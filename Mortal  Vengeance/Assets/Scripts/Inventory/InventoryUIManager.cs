@@ -13,6 +13,14 @@ public class InventoryUIManager : MonoBehaviour
     private InventorySlot[] inventorySlots;
     public ItemData debugTestItem;
 
+    void Start()
+    {
+        if (debugTestItem != null)
+        {
+            AddItem(debugTestItem);
+        }
+    }
+
     //called before Start()
     void Awake()
     {
@@ -43,11 +51,7 @@ public class InventoryUIManager : MonoBehaviour
 
             slot.Clear();
 
-            //placed an item in the first slot(testing)
-            if (i == 0 && debugTestItem != null)
-            {
-                slot.SetItem(debugTestItem);
-            }
+          
         }
     }
 
@@ -79,5 +83,24 @@ public class InventoryUIManager : MonoBehaviour
     {
         return inventorySlots;
     }
+
+
+    public bool AddItem(ItemData item)
+    {
+        // search for an empty slot in the inventory grid
+        foreach (Transform child in inventoryGrid)
+        {
+            InventorySlot slot = child.GetComponent<InventorySlot>();
+            if (slot != null && slot.IsEmpty())
+            {
+                slot.SetItem(item);
+                return true;
+            }
+        }
+
+        Debug.Log("Inventory full!");
+        return false;
+    }
+
 
 }
