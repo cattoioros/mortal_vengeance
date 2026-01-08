@@ -248,7 +248,7 @@ public class PromisedBoss : EnemyBase
     {
         yield return StartCoroutine(PerformMeteors());
 
-        CurrentCombo = AttackStart.None;
+        
     }
 
     //charge combo
@@ -579,7 +579,6 @@ public class PromisedBoss : EnemyBase
 
             yield return new WaitForSeconds(0.8f);
 
-            CurrentCombo = AttackStart.None;
 
         }
 
@@ -706,8 +705,70 @@ public class PromisedBoss : EnemyBase
     }
 
 
+    public void ExecuteRangedAttack()
+    {
+        int choice = Random.Range(0, 4);
+
+        switch (choice)
+        {
+            case 0:
+                CurrentCombo = AttackStart.Meteors;
+                StartCoroutine(ExecuteMeteorsCombo());
+                break;
+            case 1:
+                CurrentCombo = AttackStart.Charge;
+                StartCoroutine(ExecuteChargeCombo());
+                break;
+            case 2:
+                CurrentCombo = AttackStart.AOEDrag;
+                StartCoroutine(ExecuteAoeDragCombo());
+                break;
+            case 3:
+                currentState = EnemyState.Chase;
+                if (agent != null)
+                    agent.isStopped = false;
+                break;
+
+            default:
+                currentState = EnemyState.Chase;
+                if (agent != null)
+                    agent.isStopped = false;
+                break;
+
+        }
+    }
+
+    public void ExecuteMeleeAtack()
+    {
+        int choice = Random.Range(0, 3);
+        switch (choice)
+        {
+            case 0:
+                CurrentCombo = AttackStart.DoubleSweep;
+                StartCoroutine(ExecuteDoubleSweepCombo());
+                break;
+            case 1:
+                CurrentCombo = AttackStart.ExplodeSlash;
+                StartCoroutine(ExecuteExplodeSlashCombo());
+                break;
+            case 3:
+                CurrentCombo = AttackStart.RightSweep;
+                StartCoroutine(ExecuteRightSweepCombo());
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void animationFinished()
+    {
+        CurrentCombo = AttackStart.None;
+    }
+    
     protected override void AttackLogic()
     {
+
+        if (CurrentCombo != AttackStart.None) return;
 
         float PlayerDistance = Vector3.Distance(transform.position, playerTarget.position);
 
@@ -719,7 +780,6 @@ public class PromisedBoss : EnemyBase
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
         }
 
-        int choice = 0;
 
         if (animator != null && agent != null)
         {
@@ -728,73 +788,25 @@ public class PromisedBoss : EnemyBase
             animator.SetFloat("Speed", speed);
         }
 
-
-        if (CurrentCombo == AttackStart.None)
+        if ((!is50Used && currentHealth <= maxHealth / 2))
         {
+            CurrentCombo = AttackStart.HalfHealth;
+            StartCoroutine(PerformAsteroidDescent());
+            is50Used = true;
+            return;
+        }
 
-            if ((!is50Used && currentHealth <= maxHealth / 2))
-            {
-                CurrentCombo = AttackStart.HalfHealth;
-                StartCoroutine(PerformAsteroidDescent());
-                is50Used = true;
-            }
-            else if (PlayerDistance > rangeAttackDistance)
-            {
-                choice = Random.Range(0, 4);
+        if (PlayerDistance > rangeAttackDistance)
+        {
+            ExecuteRangedAttack();
 
-                switch (choice)
-                {
-                    case 0:
-                        CurrentCombo = AttackStart.Meteors;
-                        StartCoroutine(ExecuteMeteorsCombo());
-                        break;
-                    case 1:
-                        CurrentCombo = AttackStart.Charge;
-                        StartCoroutine(ExecuteChargeCombo());
-                        break;
-                    case 2:
-                        CurrentCombo = AttackStart.AOEDrag;
-                        StartCoroutine(ExecuteAoeDragCombo());
-                        break;
-                    case 3:
-                        currentState = EnemyState.Chase;
-                        if (agent != null) 
-                            agent.isStopped = false;
-                        break;
-                        
-                    default:
-                        currentState = EnemyState.Chase;
-                        if (agent != null) 
-                            agent.isStopped = false; 
-                        break;
-                        
-                }
-            }
-            else
-            {
-                choice = Random.Range(0,4);
-                switch (choice)
-                {
-                    case 0:
-                        CurrentCombo = AttackStart.DoubleSweep;
-                        StartCoroutine(ExecuteDoubleSweepCombo());
-                        break;
-                    case 1:
-                        CurrentCombo = AttackStart.ExplodeSlash;
-                        StartCoroutine(ExecuteExplodeSlashCombo());
-                        break;
-                    case 2:
-                        CurrentCombo = AttackStart.Meteors;
-                        StartCoroutine(ExecuteMeteorsCombo());
-                        break;
-                    case 3:
-                        CurrentCombo = AttackStart.RightSweep;
-                        StartCoroutine(ExecuteRightSweepCombo());
-                        break;
-                    default:
-                        break;
-                }
-            }
+
+        }
+        else
+        {
+            ExecuteMeleeAtack();
+            
+        }
         }
     }
-}
+

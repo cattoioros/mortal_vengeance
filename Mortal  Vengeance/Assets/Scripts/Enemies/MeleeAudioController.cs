@@ -8,6 +8,8 @@ public class MeleeAudioController : MonoBehaviour
 
     public AudioClip swordAttack;
 
+    public AudioClip deathSound;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -32,7 +34,15 @@ public class MeleeAudioController : MonoBehaviour
         }
     }
 
-  
+    public void playDeathSound()
+    {
+        if (sursa != null && deathSound != null)
+        {
+            sursa.PlayOneShot(deathSound, 1f);
+        }
+    }
+
+
 
 
 

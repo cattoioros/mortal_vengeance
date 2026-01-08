@@ -454,7 +454,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1571042049591659991, guid: 61b3e3801d56a3f429556c96ea2f07d6, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1571042049591659991, guid: 61b3e3801d56a3f429556c96ea2f07d6, type: 3}
       propertyPath: m_TagString
@@ -871,6 +871,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeleeAudioController
   swordAttack: {fileID: 8300000, guid: 72de2a353cacc46d3aad1d65f2599d2a, type: 3}
+  deathSound: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
 --- !u!1 &625205161
 GameObject:
   m_ObjectHideFlags: 0
@@ -1345,9 +1346,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c3a52ba6244ab94290b574ae6be6d8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MouseLook
-  mouseSensitivity: 100
-  playerBody: {fileID: 625205169}
-  xRotation: 0
 --- !u!1 &902638073
 GameObject:
   m_ObjectHideFlags: 0
@@ -1851,7 +1849,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1571042049591659991, guid: 61b3e3801d56a3f429556c96ea2f07d6, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2199628841774520173, guid: 61b3e3801d56a3f429556c96ea2f07d6, type: 3}
       propertyPath: m_LocalScale.x
@@ -2086,6 +2084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeleeAudioController
   swordAttack: {fileID: 8300000, guid: 72de2a353cacc46d3aad1d65f2599d2a, type: 3}
+  deathSound: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
 --- !u!1 &1042354046
 GameObject:
   m_ObjectHideFlags: 0
@@ -2302,6 +2301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnerAudioController
   spawnMinion: {fileID: 8300000, guid: ff5f85da24bc943d1abdc5760a22bc81, type: 3}
+  deathSound: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
 --- !u!4 &1124635484 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1850504136605716616, guid: e11ae5680dc07ca44a361f44196086a0, type: 3}
@@ -2448,7 +2448,8 @@ MonoBehaviour:
   meteorsFlyingSound: {fileID: 8300000, guid: cc6699269b4c1d44ea1e860518b9bb73, type: 3}
   descentSound: {fileID: 8300000, guid: 7d156b8a5b340cd46bcf0a76557dd2dd, type: 3}
   descentCrashSound: {fileID: 8300000, guid: 986d6b30567e30e428f3f21373fe45ca, type: 3}
-  swingSwordSound: {fileID: 0}
+  swingSwordSound: {fileID: 8300000, guid: 80151380c0f818243b66a78ef69c9fcd, type: 3}
+  deathSound: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
 --- !u!82 &1368471790
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2853,7 +2854,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100050, guid: 6753a609b5e98544d9f23dc8365ba5ff, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400050, guid: 6753a609b5e98544d9f23dc8365ba5ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -3387,7 +3388,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6017230220818997599, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3541,6 +3542,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedAudioController
   loadBow: {fileID: 8300000, guid: 470d35b1638f4234e895ca3e65fb00dc, type: 3}
   shootBow: {fileID: 8300000, guid: ad10399abb9431a40b001f8ea803e810, type: 3}
+  deathSound: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
 --- !u!82 &1865675051
 AudioSource:
   m_ObjectHideFlags: 0

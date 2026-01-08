@@ -10,6 +10,8 @@ public class RangedAudioController : MonoBehaviour
 
     public AudioClip shootBow;
 
+    public AudioClip deathSound;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -39,6 +41,14 @@ public class RangedAudioController : MonoBehaviour
         if (sursa != null && shootBow != null)
         {
             sursa.PlayOneShot(shootBow, 0.5f);
+        }
+    }
+
+    public void playDeathSound()
+    {
+        if (sursa != null &&deathSound != null)
+        {
+            sursa.PlayOneShot(deathSound, 1f);
         }
     }
 

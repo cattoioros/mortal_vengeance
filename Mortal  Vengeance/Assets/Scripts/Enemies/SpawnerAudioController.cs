@@ -8,6 +8,7 @@ public class SpawnerAudioController : MonoBehaviour
 
     public AudioClip spawnMinion;
 
+    public AudioClip deathSound;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -29,6 +30,14 @@ public class SpawnerAudioController : MonoBehaviour
         if (sursa != null && spawnMinion != null)
         {
             sursa.PlayOneShot(spawnMinion, 0.5f);
+        }
+    }
+
+    public void playDeathSound()
+    {
+        if (sursa != null && deathSound != null)
+        {
+            sursa.PlayOneShot(deathSound, 1f);
         }
     }
 }

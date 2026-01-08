@@ -18,6 +18,8 @@ public class BossAudioController : MonoBehaviour
 
     public AudioClip swingSwordSound;
 
+    public AudioClip deathSound;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -77,7 +79,15 @@ public class BossAudioController : MonoBehaviour
     {
         if(sursa!=null && swingSwordSound!=null)
         {
-            sursa.PlayOneShot(swingSwordSound, 6f);
+            sursa.PlayOneShot(swingSwordSound, 0.4f);
+        }
+    }
+
+    public void playDeathSound()
+    {
+        if(sursa != null && deathSound!=null)
+        {
+            sursa.PlayOneShot(deathSound, 1f);
         }
     }
 
