@@ -1,23 +1,21 @@
 using UnityEngine;
+using TMPro;
 
 public class ItemPickup : MonoBehaviour
 {
     public ItemData item;
-    public float pickupRadius = 2f;
 
-    private Transform player;
+    [Header("UI")]
+    [SerializeField] private GameObject pickupPrompt; 
+
+    private bool playerInRange;
     private bool pickedUp;
-
-    void Start()
-    {
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-    }
 
     void Update()
     {
-        if (pickedUp || player == null) return;
+        if (!playerInRange || pickedUp) return;
 
-        if (Vector3.Distance(transform.position, player.position) <= pickupRadius)
+        if (Input.GetKeyDown(KeyCode.E))
         {
             TryPickup();
         }
@@ -25,14 +23,43 @@ public class ItemPickup : MonoBehaviour
 
     void TryPickup()
     {
-        if (pickedUp) return;
-
         InventoryUIManager inventory = FindObjectOfType<InventoryUIManager>(true);
         if (inventory == null) return;
 
-        inventory.AddItem(item); 
+        inventory.AddItem(item);
 
         pickedUp = true;
+        HidePrompt();
         Destroy(gameObject);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = true;
+            ShowPrompt();
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = false;
+            HidePrompt();
+        }
+    }
+
+    void ShowPrompt()
+    {
+        if (pickupPrompt != null)
+            pickupPrompt.SetActive(true);
+    }
+
+    void HidePrompt()
+    {
+        if (pickupPrompt != null)
+            pickupPrompt.SetActive(false);
     }
 }
