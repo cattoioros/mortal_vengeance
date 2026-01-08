@@ -1,112 +1,116 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
-using Interfaces;
-
 
 public class PlayerAttack : MonoBehaviour
 {
-    [Header("Attack Settings")]
+    [Header("Attack Damage")]
     public int light_damage = 20;
-    public float light_attackCooldown = 0.5f;
     public int heavy_damage = 40;
+
+    [Header("Cooldowns")]
+    public float light_attackCooldown = 0.6f;
     public float heavy_attackCooldown = 1.2f;
+    
+    [Header("Combo Settings")]
+    public float comboResetTime = 5.0f; // Timpul pana la resetarea combo-ului
+    private int currentAttackIndex = 0; // 0, 1, 2
+    private float lastAttackTime;
+
     private float nextLightAttackTime = 0f;
     private float nextHeavyAttackTime = 0f;
-
     private int currentDamage = 0;
 
+    [Header("References")]
+    public Collider hitbox;
+    [SerializeField] private Animator animator;
 
-    public Collider hitbox; // collider pe sabie sau mana jucatorului
-
-
-        private void Start()
+    private void Start()
     {
-        hitbox.enabled = false;
+        if (animator == null) animator = GetComponent<Animator>();
+        
+        if (hitbox != null)
+            hitbox.enabled = false;
     }
 
-    void Update()
+void Update()
+{
+    // RESETARE COMBO: Doar dacă a trecut timpul și indexul nu e deja 0
+    if (currentAttackIndex != 0)
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Time.time > lastAttackTime + comboResetTime)
         {
-            TryLightAttack();
+            Debug.Log("Combo Resetat după " + comboResetTime + " secunde de inactivitate.");
+            currentAttackIndex = 0;
+            // Opțional: trimitem și în animator resetarea
+            animator.SetInteger("AttackIndex", 0);
         }
-        if (Input.GetMouseButtonDown(1))
-        {
-            TryHeavyAttack();
-        }
-
-    }
-    IEnumerator ActivateHitbox()
-    {
-        Debug.Log("Hitbox ON");
-        hitbox.enabled = true;
-
-        yield return new WaitForSeconds(0.1f);
-
-        hitbox.enabled = false;
-        Debug.Log("Hitbox OFF");
     }
 
-    void TryLightAttack()
-    {
-    Debug.Log("Incerc sa atac... Time.time = " + Time.time + 
-                  ", nextAttackTime = " + nextLightAttackTime);
+    if (Input.GetMouseButtonDown(0)) TryLightAttack();
+    if (Input.GetMouseButtonDown(1)) TryHeavyAttack();
+}
+void TryLightAttack()
+{
+    if (Time.time < nextLightAttackTime) return;
 
-        // Check cooldown
-        if (Time.time < nextLightAttackTime)
-        {
-            Debug.Log("Nu pot ataca INCA! Cooldown activ.");
-            return;
-        }
+    // IMPORTANT: Actualizăm lastAttackTime fix în momentul click-ului acceptat
+    lastAttackTime = Time.time; 
+    nextLightAttackTime = Time.time + light_attackCooldown;
+    
+    currentDamage = light_damage;
 
-        nextLightAttackTime = Time.time + light_attackCooldown;
+    animator.SetInteger("AttackIndex", currentAttackIndex);
+    animator.SetTrigger("LightAttack");
 
-        Debug.Log("ATAC LIGHT PORNIT! Cooldown pana la secunda: " + nextLightAttackTime);
-        currentDamage = light_damage;
+    Debug.Log("Atac pornit. Index: " + currentAttackIndex + ". Următorul reset la: " + (lastAttackTime + comboResetTime));
 
-        StartCoroutine(ActivateHitbox());
-    }
+    currentAttackIndex++;
+    if (currentAttackIndex >= 3) currentAttackIndex = 0;
+
+    StopAllCoroutines();
+    StartCoroutine(ActivateHitbox());
+}
 
     void TryHeavyAttack()
     {
-    Debug.Log("Incerc sa atac... Time.time = " + Time.time + 
-                  ", nextAttackTime = " + nextHeavyAttackTime);
-
-        // Check cooldown
-        if (Time.time < nextHeavyAttackTime)
-        {
-            Debug.Log("Nu pot ataca INCA! Cooldown activ.");
-            return;
-        }
+        if (Time.time < nextHeavyAttackTime) return;
 
         nextHeavyAttackTime = Time.time + heavy_attackCooldown;
+        currentDamage = heavy_damage;
 
-        Debug.Log("ATAC HEAVY PORNIT! Cooldown pana la secunda: " + nextHeavyAttackTime);
-        currentDamage=heavy_damage;
+        // Resetam combo-ul cand dam un Heavy
+        currentAttackIndex = 0;
+        animator.SetTrigger("HeavyAttack");
 
+        StopAllCoroutines();
         StartCoroutine(ActivateHitbox());
     }
 
-
-        public void HandleHit(Collider other)
+    IEnumerator ActivateHitbox()
     {
-        Debug.Log("Ceva a intrat in hitbox: " + other.name);
+        // Un mic delay pentru a lasa animatia sa porneasca inainte de a activa colliderul
+        yield return new WaitForSeconds(0.15f);
 
-        IsDamageable dmg = other.GetComponent<IsDamageable>();
+        if (hitbox != null)
+        {
+            hitbox.enabled = true;
+            yield return new WaitForSeconds(0.5f); // Cat timp ramane atacul activ
+            hitbox.enabled = false;
+        }
+    }
+
+    // Aceasta metoda trebuie apelata de un script separat pe Hitbox (ex: TriggerDetector)
+    public void HandleHit(Collider other)
+    {
+        // Verificam daca tinta are interfata de damage (presupunand ca IsDamageable e o interfata/clasa)
+        // Daca folosesti interfata: other.GetComponent<IInterfaces.IDamageable>();
+        var dmg = other.GetComponent<Interfaces.IsDamageable>();
 
         if (dmg != null)
         {
             Debug.Log("Lovesc " + other.name + " cu " + currentDamage + " dmg!");
             dmg.TakeDamage(currentDamage);
         }
-        else
-        {
-            Debug.Log(other.name + " NU are IDamageable!");
-        }
     }
 }
-
-
-
-
