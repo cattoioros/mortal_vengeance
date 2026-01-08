@@ -7,6 +7,7 @@ TagManager:
   - Base
   - Boss
   - Meteor
+  - SkillTree
   layers:
   - Default
   - TransparentFX
