@@ -19,7 +19,7 @@ public class WeaponHitbox : MonoBehaviour
         if (lastHitTime.TryGetValue(go, out float last) && now - last < hitCooldown)
             return;
 
-        if (other.TryGetComponent<PlayerHealthManager>(out var ph))
+        if (other.TryGetComponent<PlayerStatsManager>(out var ph))
         {
             ph.TakeDamage((int)damage);
             lastHitTime[go] = now;

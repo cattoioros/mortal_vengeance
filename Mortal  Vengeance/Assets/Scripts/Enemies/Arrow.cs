@@ -14,7 +14,7 @@ public class Arrow : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.TryGetComponent<PlayerHealthManager>(out var playerHealth))
+        if(other.TryGetComponent<PlayerStatsManager>(out var playerHealth))
         {
             playerHealth.TakeDamage(myArcher.arrowDmg);
             Debug.Log("Am lovit jucatorul");

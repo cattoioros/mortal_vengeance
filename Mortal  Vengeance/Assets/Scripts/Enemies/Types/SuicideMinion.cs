@@ -76,7 +76,7 @@ public class SuicideMinion : EnemyBase
 
         foreach (Collider collider in hitObjects)
         {
-            if (collider.TryGetComponent<PlayerHealthManager>(out var playerHealth))
+            if (collider.TryGetComponent<PlayerStatsManager>(out var playerHealth))
             {
                 playerHealth.TakeDamage(explosionDmg);
             }

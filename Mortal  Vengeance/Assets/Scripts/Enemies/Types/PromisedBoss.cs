@@ -111,7 +111,7 @@ public class PromisedBoss : EnemyBase
         Collider[] hitPlayers = Physics.OverlapSphere(transform.position, dmgRadius); 
         foreach (var hit in hitPlayers)
         {
-            if (hit.TryGetComponent<PlayerHealthManager>(out var playerHealth))
+            if (hit.TryGetComponent<PlayerStatsManager>(out var playerHealth))
             {
                 playerHealth.TakeDamage(baseDmg / 3);
                 Debug.Log("Am nimerit cu GroundStomp");
@@ -233,7 +233,7 @@ public class PromisedBoss : EnemyBase
 
         foreach (var hit in hitPlayers)
         {
-            if (hit.TryGetComponent<PlayerHealthManager>(out var playerHealth))
+            if (hit.TryGetComponent<PlayerStatsManager>(out var playerHealth))
             {
                 playerHealth.TakeDamage(baseDmg);
                 Debug.Log("AM lovit");
@@ -286,7 +286,7 @@ public class PromisedBoss : EnemyBase
 
         foreach (var hit in hits)
         {
-            if (hit.TryGetComponent<PlayerHealthManager>(out var player))
+            if (hit.TryGetComponent<PlayerStatsManager>(out var player))
             {
                 player.TakeDamage(baseDmg);
                 Debug.Log("Thrust: Player lovit");
@@ -336,7 +336,7 @@ public class PromisedBoss : EnemyBase
 
         foreach (var hit in hits)
         {
-            if (hit.TryGetComponent<PlayerHealthManager>(out var player))
+            if (hit.TryGetComponent<PlayerStatsManager>(out var player))
             {
                 player.TakeDamage(dmg);
                 Debug.Log("Explozie: player lovit");
@@ -429,7 +429,7 @@ public class PromisedBoss : EnemyBase
 
         foreach (Collider hit in hits)
         {
-            if(hit.TryGetComponent<PlayerHealthManager>(out var playerHealth))
+            if(hit.TryGetComponent<PlayerStatsManager>(out var playerHealth))
             {
                 playerHealth.TakeDamage(dmgFall);
                 Debug.Log("Descent Explosion hit player");
@@ -536,7 +536,7 @@ public class PromisedBoss : EnemyBase
 
         foreach (var hit in hits)
         {
-            if (hit.TryGetComponent<PlayerHealthManager>(out var player))
+            if (hit.TryGetComponent<PlayerStatsManager>(out var player))
             {
                 player.TakeDamage(baseDmg);
                 Debug.Log("Lovit cu sabia");
@@ -557,7 +557,7 @@ public class PromisedBoss : EnemyBase
 
         foreach (var hit in hitsGround)
         {
-            if (hit.TryGetComponent<PlayerHealthManager>(out var player))
+            if (hit.TryGetComponent<PlayerStatsManager>(out var player))
             {
                 player.TakeDamage(baseDmg);
                 Debug.Log("Lovit de shockwave");

@@ -15,7 +15,7 @@ public class EnemyMelee1 : EnemyBase
 
         if (unghiAtac < 30)
         {
-            if (playerTarget.TryGetComponent<PlayerHealthManager>(out var playerHealth))
+            if (playerTarget.TryGetComponent<PlayerStatsManager>(out var playerHealth))
             {
                 playerHealth.TakeDamage(baseDmg);
                 Debug.Log("Am lovit");

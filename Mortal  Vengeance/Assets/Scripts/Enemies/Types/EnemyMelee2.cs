@@ -19,7 +19,7 @@ public class EnemyMelee2 : EnemyBase
 
         if (Physics.SphereCast(origin, radius, transform.forward, out hit, attackRange))
         {
-            if (hit.collider.TryGetComponent<PlayerHealthManager>(out var playerHealth))
+            if (hit.collider.TryGetComponent<PlayerStatsManager>(out var playerHealth))
             {
                 playerHealth.TakeDamage(baseDmg);
                 Debug.Log($"{gameObject.name} a lovit jucatorul la nivelul pieptului!");

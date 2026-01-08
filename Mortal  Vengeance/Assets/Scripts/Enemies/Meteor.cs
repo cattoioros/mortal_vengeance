@@ -63,7 +63,7 @@ public class Meteor : MonoBehaviour
 
             foreach (Collider hit in hitObjects)
             {
-                if (hit.TryGetComponent<PlayerHealthManager>(out var playerHealth))
+                if (hit.TryGetComponent<PlayerStatsManager>(out var playerHealth))
                 {
                     playerHealth.TakeDamage(damageAmount);
                     Debug.Log("Meteor: L-am lovit pe jucator!");
