@@ -6,6 +6,8 @@ using UnityEngine.AI;
 //Starile inamicilor
 public enum EnemyState { Idle, Chase, Attack, Dead}
 
+
+
 public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 {
     //Caracteristici de baza ale tuturor inamicilor
@@ -20,7 +22,11 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     protected int currentHealth; 
     protected EnemyState currentState = EnemyState.Idle;
     protected NavMeshAgent agent; 
-    protected Transform playerTarget; 
+    protected Transform playerTarget;
+    protected Animator animator;
+    protected bool isAttacking = false;
+    protected bool isDead = false;
+
 
     protected virtual void Start()
     {
@@ -34,6 +40,10 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
         {
             agent.speed = movementSpeed;
             agent.isStopped = true;
+
+            agent.stoppingDistance = attackRange;
+            agent.acceleration = agent.speed * 2;
+            agent.angularSpeed = 360f;
         }
 
         if(GameManager.instance != null)
@@ -41,13 +51,23 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
             playerTarget = GameManager.instance.PlayerTransform;
 
         }
+        else
+        {
+            Debug.Log("Nu avem instanta");
+        }
 
         if (playerTarget == null)
         {
             Debug.LogError(gameObject.name + " nu a putut gasi jucătorul prin GameManager.");
         }
 
-     
+
+        animator = GetComponentInChildren<Animator>(); // <- asta lipsea
+
+        if (animator == null)
+            Debug.LogError(name + " nu are animator");
+
+
 
     }
 
@@ -56,6 +76,9 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     {
         if (agent != null)
             agent.isStopped = true;
+
+        if (animator != null)
+            animator.SetFloat("Speed", 0);
 
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
 
@@ -71,6 +94,8 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     //Logica starii de urmarire
     protected virtual void UpdateChase()
     {
+        if (agent != null)
+            agent.isStopped = false;
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
 
 
@@ -92,18 +117,40 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 
         if (agent != null)
             agent.SetDestination(playerTarget.position);
+
+        if (agent != null && animator != null)
+        {
+            // currentSpeed este viteza pe care o folosește NavMeshAgent-ul
+            float currentSpeed = agent.velocity.magnitude;
+
+            // Setează parametrul "Speed" în Animator
+            animator.SetFloat("Speed", currentSpeed);
+        }
     }
     //Logica starii de atac
     protected virtual void UpdateAttack()
     {
+
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
+            agent.ResetPath();
+            animator.SetFloat("Speed", 0f);
+
+        }
+
         //Inamicul se roteste spre jucator
         Vector3 lookDirection = playerTarget.position - transform.position;
 
         lookDirection.y = 0f;
 
-        Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+        if (lookDirection.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
 
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+        }
 
         //Verificam daca jucatorul iese din raza de atac
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
@@ -125,8 +172,9 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
         currentHealth -= amount;
         Debug.Log("Am luat damage"+ amount);
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && !isDead )
         {
+            isDead = true;
             Die();
         }
     }
@@ -140,10 +188,14 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
             agent.enabled = false;
         }
 
+        if(animator!= null)
+        {
+            animator.SetTrigger("TriggerDeath");
+        }
+
         Debug.Log(gameObject.name + "a murit");
 
-        Destroy(gameObject,3f);
-
+        Destroy(gameObject, 5f);
        
 
     }
@@ -153,9 +205,11 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     // Update is called once per frame
     protected virtual void Update()
     {
-
+        //Debug.Log(currentState);
         if (playerTarget == null || currentState == EnemyState.Dead)
             return;
+
+        if (isAttacking) return;
 
         //Schimbarea intre stari
         switch (currentState)
@@ -170,6 +224,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
                 UpdateAttack();
                 break;
         }
+
         
     }
 

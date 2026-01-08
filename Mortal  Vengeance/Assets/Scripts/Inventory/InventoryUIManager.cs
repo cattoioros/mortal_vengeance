@@ -3,68 +3,81 @@ using UnityEngine;
 public class InventoryUIManager : MonoBehaviour
 {
     [Header("Panels")]
-    public Transform equipmentPanel;  //panel with slots for armor and weapon that the player is currently using(5 slots)
-    public Transform inventoryGrid;  //panel with slots for all items the player is carrying(27 slots)
-    public Transform hotbarGrid;  //panel with slots for quick access to items(9 slots)
+    public Transform equipmentPanel;   // 5 slots
+    public Transform inventoryGrid;    // 27 slots
+    public Transform hotbarGrid;       // 9 slots
 
     [Header("Prefabs")]
-    public GameObject slotPrefab;  //standard slot prefab to instantiate slots from
+    public GameObject slotPrefab;
 
-    void Start()
+    private InventorySlot[] inventorySlots;
+    public ItemData debugTestItem;
+
+    //called before Start()
+    void Awake()
     {
-        GenerateEquipmentSlot();
+        GenerateEquipmentSlots();
         GenerateInventorySlots();
         GenerateHotbarSlots();
     }
 
-    //genretes 5 slotes for equipment
-    void GenerateEquipmentSlot()
+    // create 5 slots for equipment panel
+    void GenerateEquipmentSlots()
     {
-        //Slots order: 0.Helmet, 1.Armor, 2.Legs, 3.Boots, 4.Weapon
-
-        for(int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
         {
-            //create a slot for EquipmentPanel
-            GameObject slot = Instantiate(slotPrefab, equipmentPanel);
-
-            //get InventorySlot component from the instantiated slot
-            InventorySlot slotComp = slot.GetComponent<InventorySlot>();
-
-            slotComp.index = i;
-            slotComp.slotType = InventorySlot.SlotType.Equipment;
-
-            slotComp.Refresh();
+            InventorySlot slot = CreateSlot(equipmentPanel, i, InventorySlot.SlotType.Equipment);//the slot is created
+            slot.Clear(); //slot is empty at the begining
         }
-
     }
 
-    //generates 27 slots for inventory
+    //create 27 slots for inventory panel
     void GenerateInventorySlots()
     {
+        Debug.Log("GenerateInventorySlots CALLED");
+
         for (int i = 0; i < 27; i++)
         {
-            GameObject slot = Instantiate(slotPrefab, inventoryGrid);
+            InventorySlot slot = CreateSlot(inventoryGrid,i,InventorySlot.SlotType.Inventory
+            );
 
-            InventorySlot slotComp = slot.GetComponent<InventorySlot>();
-            slotComp.index = i;
-            slotComp.slotType = InventorySlot.SlotType.Inventory;
+            slot.Clear();
 
-            slotComp.Refresh();
+            //placed an item in the first slot(testing)
+            if (i == 0 && debugTestItem != null)
+            {
+                slot.SetItem(debugTestItem);
+            }
         }
     }
 
-    //generates 9 slots for hotbar
+
+    //create 9 slots for hotbar panel
     void GenerateHotbarSlots()
     {
         for (int i = 0; i < 9; i++)
         {
-            GameObject slot = Instantiate(slotPrefab, hotbarGrid);
-
-            InventorySlot slotComp = slot.GetComponent<InventorySlot>();
-            slotComp.index = i;
-            slotComp.slotType = InventorySlot.SlotType.Hotbar;
-
-            slotComp.Refresh();
+            InventorySlot slot = CreateSlot(hotbarGrid, i, InventorySlot.SlotType.Hotbar);
+            slot.Clear();
         }
     }
+
+    InventorySlot CreateSlot(Transform parent, int index, InventorySlot.SlotType type)
+    {
+        GameObject go = Instantiate(slotPrefab, parent);
+        InventorySlot slot = go.GetComponent<InventorySlot>();
+
+        slot.index = index;
+        slot.slotType = type;
+
+        return slot;
+    }
+
+    
+    //useless for now
+    public InventorySlot[] GetInventorySlots()
+    {
+        return inventorySlots;
+    }
+
 }

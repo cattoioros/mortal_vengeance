@@ -5,15 +5,18 @@ TagManager:
   serializedVersion: 3
   tags:
   - Base
+  - Boss
+  - Meteor
+  - SkillTree
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Meteor
   - Water
   - UI
-  - 
-  - 
+  - Ground
+  - PlayerPreview
   - 
   - 
   - 
