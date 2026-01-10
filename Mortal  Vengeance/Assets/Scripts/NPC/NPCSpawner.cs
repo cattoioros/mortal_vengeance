@@ -3,22 +3,29 @@ using UnityEngine;
 public class NPCSpawner : MonoBehaviour
 {
     public GameObject npcPrefab;
-    public int npcCount;
-    public float spawnRange;
+    public int npcCount = 5;
+    public float spawnRange = 15f;
+    public float minSpawnDistance = 5f;
 
     void Start()
     {
         SpawnNPCs();
     }
 
-    //spawns the NPCs at random positions within the defined range
+    //spawns NPCs in a circular area around the spawner, ensuring they are not too close
     void SpawnNPCs()
     {
-        for(int i=0; i < npcCount; i++)
+        for (int i = 0; i < npcCount; i++)
         {
-            Vector3 randomSpawnPos = new Vector3(Random.Range(-spawnRange, spawnRange), 0.5f, Random.Range(-spawnRange, spawnRange));
-            Instantiate(npcPrefab, randomSpawnPos, Quaternion.identity);  //creates the new NPC at the random position
-        }
+            Vector2 circle;
+            do
+            {
+                circle = Random.insideUnitCircle * spawnRange;
+            }
+            while (circle.magnitude < minSpawnDistance);
 
+            Vector3 spawnPos = transform.position + new Vector3(circle.x, 0f, circle.y);
+            Instantiate(npcPrefab, spawnPos, Quaternion.identity); // Spawn the NPC at the calculated position
+        }
     }
 }
