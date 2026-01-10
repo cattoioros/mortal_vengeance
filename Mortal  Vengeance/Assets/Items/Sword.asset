@@ -17,3 +17,4 @@ MonoBehaviour:
   itemType: 1
   damage: 20
   attackSpeed: 1.2
+  equippedPrefab: {fileID: 1889199570050658849, guid: 7da16e8bcbaae794ea9801949aa399f6, type: 3}
