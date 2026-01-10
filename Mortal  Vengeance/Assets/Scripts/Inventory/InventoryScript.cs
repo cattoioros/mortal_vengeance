@@ -43,18 +43,55 @@ public class InventorySystem : MonoBehaviour
     //called when an item is dropped onto a slot
     public void OnSlotDropped(InventorySlot from, InventorySlot to)
     {
-        if (from == to) return; //same slot, do nothing
+        if (from == to) return;
+        if (from.currentItem == null) return;
 
-        ItemData draggedItem = from.currentItem; //get the item being dragged
+        ItemData draggedItem = from.currentItem;
 
-        to.SetItem(draggedItem); //set the item in the target slot
+        // === EQUIPMENT LOGIC ===
+        if (to.slotType == InventorySlot.SlotType.Equipment)
+        {
+            // weapon slot (index 1)
+            if (to.index == 1)
+            {
+                // doar arme
+                if (draggedItem.itemType != ItemType.Weapon)
+                {
+                    Debug.Log("Only weapons can be placed here!");
+                    return;
+                }
 
-        from.Clear();  //clear the original slot
+                WeaponItemData weapon = draggedItem as WeaponItemData;
+                if (weapon == null)
+                    return;
 
-        InventoryDragHandler.Instance.StopDrag(); //stop the drag operation
+                WeaponManager wm = FindObjectOfType<WeaponManager>();
+                if (wm != null)
+                {
+                    wm.EquipWeapon(weapon);
+                }
+            }
+        }
+
+        // === UNEQUIP LOGIC ===
+        if (from.slotType == InventorySlot.SlotType.Equipment && from.index == 1)
+        {
+            WeaponManager wm = FindObjectOfType<WeaponManager>();
+            if (wm != null)
+            {
+                wm.Unequip();
+            }
+        }
+
+        // === MOVE ITEM UI ===
+        to.SetItem(draggedItem);
+        from.Clear();
+
+        InventoryDragHandler.Instance.StopDrag();
 
         Debug.Log($"Moved item from slot {from.index} to slot {to.index}");
     }
+
 
     //swaps items between two slots
     private void SwapItems(InventorySlot a, InventorySlot b)
