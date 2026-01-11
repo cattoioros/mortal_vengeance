@@ -7,6 +7,7 @@ public class EnemyMelee2 : EnemyBase
 
     [Header("Audio")]
     public MeleeAudioController audioController;
+    
 
     public void AttackDmg()
     {
@@ -22,7 +23,7 @@ public class EnemyMelee2 : EnemyBase
             if (hit.collider.TryGetComponent<PlayerStatsManager>(out var playerHealth))
             {
                 playerHealth.TakeDamage(baseDmg);
-                Debug.Log($"{gameObject.name} a lovit jucatorul la nivelul pieptului!");
+             
             }
         }
 

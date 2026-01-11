@@ -99,6 +99,8 @@ public void LoadGame()
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0);
 
+        Debug.Log("Player lovitt" + Time.time);
+
         if (currentHealth <= 0)
         {
             Die();
@@ -175,7 +177,7 @@ public void LoadGame()
 
     private void Die()
     {
-        Debug.Log("Ai murit.");
+        Debug.Log("Ai murit." + Time.time);
     }
 
     public float GetHealthPercent() => currentHealth / stats.maxHealth;

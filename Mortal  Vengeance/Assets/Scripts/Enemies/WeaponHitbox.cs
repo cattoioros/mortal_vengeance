@@ -4,7 +4,7 @@ using UnityEngine;
 public class WeaponHitbox : MonoBehaviour
 {
     public float damage = 10f;
-    public float hitCooldown = 0.5f; // secunde intre lovituri la acelasi target
+    public float hitCooldown = 0.5f; 
     private bool active = false;
 
     private Dictionary<GameObject, float> lastHitTime = new Dictionary<GameObject, float>();
@@ -21,6 +21,7 @@ public class WeaponHitbox : MonoBehaviour
 
         if (other.TryGetComponent<PlayerStatsManager>(out var ph))
         {
+            
             ph.TakeDamage((int)damage);
             lastHitTime[go] = now;
         }

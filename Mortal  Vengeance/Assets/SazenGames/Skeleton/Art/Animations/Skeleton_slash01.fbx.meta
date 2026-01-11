@@ -62,13 +62,6 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.44750986
-        functionName: AttackDmg
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       - time: 0.8894561
         functionName: AttackEnd
         data: 
@@ -78,6 +71,27 @@ ModelImporter:
         messageOptions: 0
       - time: 0.29396904
         functionName: AttackAudio
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0
+        functionName: AttackStart
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.23867802
+        functionName: ActivateWeaponHitbox
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.8236541
+        functionName: DeactivateWeaponHitbox
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

@@ -14,7 +14,7 @@ public class EnemyRanged : EnemyBase
     [Header("Ranged Specific")]
     [SerializeField] private GameObject arrowPrefab; 
     [SerializeField] private float speed = 50f;
-    [SerializeField] private int initialPoolSize = 10;
+    [SerializeField] private int initialPoolSize =3;
     [SerializeField] public int arrowDmg;
 
 
@@ -85,6 +85,8 @@ public class EnemyRanged : EnemyBase
             initPool(1);
         }
 
+        Debug.Log("Luam sageata" + Time.time);
+
         //Scoatem sageata din pool
         GameObject arrowToSpawn = arrowPool.Dequeue();
 
@@ -98,11 +100,13 @@ public class EnemyRanged : EnemyBase
 
     public void LoadArrow()
     {
+        Debug.Log("Incarcam sageata" + Time.time);
         arrowInHand.SetActive(true);
     }
 
     public void UnLoadArrow()
     {
+        Debug.Log("Descarcam sageata" + Time.time);
         arrowInHand.SetActive(false);
     }
 
@@ -137,6 +141,7 @@ public class EnemyRanged : EnemyBase
 
     private IEnumerator LoadBow(float delay, float duration)
     {
+        Debug.Log("Pool count" + arrowPool.Count);
         yield return new WaitForSeconds(delay);
 
         Vector3 brat1RotatieLoad = rotatieBrat1 + new Vector3(0, 0, -15);
@@ -163,11 +168,14 @@ public class EnemyRanged : EnemyBase
 
             yield return null;
         }
+
+        
     }
 
 
     public void ShootArrow()
     {
+        Debug.Log("Incepem operatiunea de tragere" + Time.time);
         GameObject readyArrow = GetArrow();
         Vector3 PlayerDirection = playerTarget.transform.position - punctLoadSageata.position;
         readyArrow.transform.rotation = Quaternion.LookRotation(PlayerDirection);
@@ -191,6 +199,7 @@ public class EnemyRanged : EnemyBase
 
     private IEnumerator ReleaseBow(float duration)
     {
+        Debug.Log("Release bow" + Time.time);
         float t = 0;
         Vector3 brat1Start = bratArc1.localEulerAngles;
         Vector3 brat2Start = bratArc2.localEulerAngles;
@@ -206,15 +215,21 @@ public class EnemyRanged : EnemyBase
 
             yield return null;
         }
+
+        isAttacking = false;
+        agent.isStopped = false;
+
     }
 
 
     protected override void AttackLogic()
     {
+        agent.isStopped = true;
         if (Time.time > lastAttackTime + attackCooldown || lastAttackTime ==0)
         {
             if(animator !=null)
             {
+                isAttacking = true;
                 animator.SetTrigger("TriggerAttack");
                 StartCoroutine(LoadBow(0.6f, 1f));
             }
@@ -227,6 +242,20 @@ public class EnemyRanged : EnemyBase
 
 
 
+        }
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        // Face player
+        Vector3 lookDir = playerTarget.position - transform.position;
+        lookDir.y = 0f;
+        if (lookDir.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(lookDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
         }
     }
 
