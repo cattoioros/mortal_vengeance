@@ -7,23 +7,22 @@ public class EnemyMelee1 : EnemyBase
     [Header("Audio")]
     public MeleeAudioController audioController;
 
-    public void AttackDmg()
+    [Header("Weapon")]
+    [SerializeField] private WeaponHitbox weaponHitbox;
+
+
+    public void ActivateWeaponHitbox()
     {
-        Vector3 playerDirection = playerTarget.position - transform.position;
-
-        float unghiAtac = Vector3.Angle(transform.forward, playerDirection);
-
-        if (unghiAtac < 30)
-        {
-            if (playerTarget.TryGetComponent<PlayerStatsManager>(out var playerHealth))
-            {
-                playerHealth.TakeDamage(baseDmg);
-                Debug.Log("Am lovit");
-            }
-
-        }
+        weaponHitbox.damage = baseDmg;
+        weaponHitbox.ActivateHitbox();
     }
 
+    public void DeactivateWeaponHitbox() => weaponHitbox.DeactivateHitbox();
+
+    public void AttackStart()
+    {
+        isAttacking = true;
+    }
     public void AttackEnd()
     {
         isAttacking = false;

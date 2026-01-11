@@ -25,7 +25,7 @@ public class Arrow : MonoBehaviour
         myArcher.ReturnArrowToPool(gameObject);
     }
 
-    public void Start()
+    public void OnEnable()
     {
         launchTime = Time.time;
     }

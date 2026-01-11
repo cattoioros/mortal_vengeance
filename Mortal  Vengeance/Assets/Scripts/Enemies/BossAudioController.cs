@@ -20,6 +20,8 @@ public class BossAudioController : MonoBehaviour
 
     public AudioClip deathSound;
 
+    public AudioClip trackBeam;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -90,5 +92,13 @@ public class BossAudioController : MonoBehaviour
             sursa.PlayOneShot(deathSound, 1f);
         }
     }
+    public void playTrackSound()
+    {
+        if (sursa != null && trackBeam != null)
+        {
+            sursa.PlayOneShot(trackBeam, 1f);
+        }
+    }
+
 
 }

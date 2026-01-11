@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class MinionSpawner : EnemyBase
 {
     [SerializeField] private Transform spawnPoint ;
-    [SerializeField] private float spawnRate = 0.8f;
+    [SerializeField] private float spawnRate = 1.5f;
     [SerializeField] private GameObject minionPrefab;
     [SerializeField] private int initialPoolSize = 5;
 
