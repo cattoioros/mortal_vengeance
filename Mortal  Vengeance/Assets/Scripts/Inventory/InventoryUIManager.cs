@@ -83,7 +83,18 @@ public class InventoryUIManager : MonoBehaviour
 
     public bool AddItem(ItemData item)
     {
-        // search for an empty slot in the inventory grid
+        //search for an empty slot in HOTBAR first
+        foreach (Transform child in hotbarGrid)
+        {
+            InventorySlot slot = child.GetComponent<InventorySlot>();
+            if (slot != null && slot.IsEmpty())
+            {
+                slot.SetItem(item);
+                return true;
+            }
+        }
+
+        //search for an empty slot in INVENTORY second
         foreach (Transform child in inventoryGrid)
         {
             InventorySlot slot = child.GetComponent<InventorySlot>();
@@ -97,6 +108,7 @@ public class InventoryUIManager : MonoBehaviour
         Debug.Log("Inventory full!");
         return false;
     }
+
 
 
 }

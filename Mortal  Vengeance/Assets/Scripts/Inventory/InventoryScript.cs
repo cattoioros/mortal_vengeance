@@ -48,7 +48,7 @@ public class InventorySystem : MonoBehaviour
 
         ItemData draggedItem = from.currentItem;
 
-        // === EQUIPMENT LOGIC ===
+        //EQUIPMENT LOGIC 
         if (to.slotType == InventorySlot.SlotType.Equipment)
         {
             // weapon slot (index 1)
@@ -73,7 +73,7 @@ public class InventorySystem : MonoBehaviour
             }
         }
 
-        // === UNEQUIP LOGIC ===
+        //UNEQUIP LOGIC
         if (from.slotType == InventorySlot.SlotType.Equipment && from.index == 1)
         {
             WeaponManager wm = FindObjectOfType<WeaponManager>();
@@ -83,7 +83,7 @@ public class InventorySystem : MonoBehaviour
             }
         }
 
-        // === MOVE ITEM UI ===
+        // ITEM UI 
         to.SetItem(draggedItem);
         from.Clear();
 
