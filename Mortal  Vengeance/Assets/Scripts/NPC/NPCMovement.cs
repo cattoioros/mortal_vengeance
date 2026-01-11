@@ -20,20 +20,13 @@ public class NPCMovement : MonoBehaviour
     void FixedUpdate()
     {
         // move using Rigidbody (collision aware)
-        Vector3 movement = direction * moveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(rb.position + movement);
+        rb.linearVelocity = new Vector3(direction.x * moveSpeed,rb.linearVelocity.y,direction.z * moveSpeed);
 
         // rotate NPC to face the movement direction
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            rb.MoveRotation(
-                Quaternion.Slerp(
-                    rb.rotation,
-                    targetRotation,
-                    rotationSpeed * Time.fixedDeltaTime
-                )
-            );
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation,targetRotation,rotationSpeed * Time.fixedDeltaTime));
         }
     }
 
@@ -53,4 +46,17 @@ public class NPCMovement : MonoBehaviour
         direction = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized; 
         timer = changeDirectionTime;
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        //take the normal of the collision
+        Vector3 normal = collision.contacts[0].normal;
+
+        //reflect the current direction using the normal
+        direction = Vector3.Reflect(direction, normal).normalized;
+
+        //reset the timer
+        timer = changeDirectionTime;
+    }
+
 }
