@@ -48,7 +48,7 @@ public class CameraController : MonoBehaviour
         InitializeIfNeeded();
 
         HandleCamera();
-        HandleWallCollision(); 
+        HandleWallCollision();
     }
 
     private void EnsurePlayer()
@@ -81,8 +81,6 @@ public class CameraController : MonoBehaviour
 
         directionNormalized = defaultOffset.normalized;
         currentDistance = defaultOffset.magnitude;
-
-        pivot = new GameObject("CameraPivot").transform;
         pivot.position = player.position;
 
         transform.SetParent(pivot);
@@ -92,15 +90,11 @@ public class CameraController : MonoBehaviour
         // Ascundem cursorul la start (opțional, dacă vrei să înceapă ascuns)
         // Cursor.lockState = CursorLockMode.Locked;
         // Cursor.visible = false;
+
+        initialized = true;
     }
 
-    void LateUpdate()
-    {
-        HandleCamera();
-        HandleWallCollision();
-    }
-
-    void HandleCamera()
+    private void HandleCamera()
     {
         // 1. Pivotul urmărește mereu jucătorul (ca să nu rămână camera în urmă)
         pivot.position = player.position;
@@ -119,10 +113,10 @@ public class CameraController : MonoBehaviour
         pitch = Mathf.Clamp(pitch, minYAngle, maxYAngle);
 
         pivot.rotation = Quaternion.Euler(pitch, yaw, 0f);
-        transform.LookAt(pivot);
+        transform.LookAt(player.position);
     }
 
-    void HandleWallCollision()
+    private void HandleWallCollision()
     {
         float targetDistance = defaultOffset.magnitude;
         Vector3 worldDirection = pivot.TransformDirection(directionNormalized);
