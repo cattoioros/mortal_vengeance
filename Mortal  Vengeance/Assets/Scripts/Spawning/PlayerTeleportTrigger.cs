@@ -18,6 +18,8 @@ public class PlayerTeleportTrigger : MonoBehaviour
     [Header("Player")]
     [SerializeField] private string playerTag = "Player";
 
+    // test
+    
     private Transform currentPlayer;
 
     private void Reset()
