@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -20,6 +21,10 @@ public class PlayerAttack : MonoBehaviour
     private float nextLightAttackTime = 0f;
     private float nextHeavyAttackTime = 0f;
     private int currentDamage = 0;
+
+
+    private List<GameObject> enemiesHit = new List<GameObject>();
+
 
     [Header("References")]
     public Collider hitbox;
@@ -89,13 +94,18 @@ void TryLightAttack()
 
     IEnumerator ActivateHitbox()
     {
+        
         // Un mic delay pentru a lasa animatia sa porneasca inainte de a activa colliderul
+
+        enemiesHit.Clear();
+
         yield return new WaitForSeconds(0.15f);
+
 
         if (hitbox != null)
         {
             hitbox.enabled = true;
-            yield return new WaitForSeconds(0.5f); // Cat timp ramane atacul activ
+            yield return new WaitForSeconds(1.5f); // Cat timp ramane atacul activ
             hitbox.enabled = false;
         }
     }
@@ -105,10 +115,19 @@ void TryLightAttack()
     {
         // Verificam daca tinta are interfata de damage (presupunand ca IsDamageable e o interfata/clasa)
         // Daca folosesti interfata: other.GetComponent<IInterfaces.IDamageable>();
+
+        if (enemiesHit.Contains(other.gameObject)) return;
+
+
         var dmg = other.GetComponent<Interfaces.IsDamageable>();
 
         if (dmg != null)
         {
+
+
+            enemiesHit.Add(other.gameObject);
+
+
             Debug.Log("Lovesc " + other.name + " cu " + currentDamage + " dmg!");
             dmg.TakeDamage(currentDamage);
         }
