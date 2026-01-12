@@ -13,6 +13,9 @@ public class SystemMenuController : MonoBehaviour
     MenuState currentState = MenuState.Closed;
     public GameObject systemMenu;
     public GameObject settingsMenu;
+    public InventoryToggle inventoryToggle;
+    public GameObject hotbarRoot;
+
 
     public static bool IsUIBlockingInput { get; private set; }
 
@@ -63,6 +66,16 @@ public class SystemMenuController : MonoBehaviour
 
     public void OpenSystemMenu()
     {
+        if (inventoryToggle != null)
+        {
+            inventoryToggle.ForceCloseInventory();
+        }
+
+        if (hotbarRoot != null)
+        {
+            hotbarRoot.SetActive(false);
+        }
+
         systemMenu.SetActive(true); //afisez meniul principal
         settingsMenu.SetActive(false); //ascund meniul de setari
 
@@ -78,6 +91,11 @@ public class SystemMenuController : MonoBehaviour
     {
         systemMenu.SetActive(false);//ascund meniul principal
         settingsMenu.SetActive(false);//ascund meniul de setari
+
+        if (hotbarRoot != null)
+        {
+            hotbarRoot.SetActive(true);
+        }
 
         Time.timeScale = 1f; //repornesc jocul 
         Cursor.visible = false; //ascund cursorul

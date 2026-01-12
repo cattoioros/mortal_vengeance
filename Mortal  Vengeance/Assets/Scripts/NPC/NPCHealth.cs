@@ -1,30 +1,23 @@
 using UnityEngine;
+using Interfaces;
 
-public class NPCHealth : MonoBehaviour
+public class NPCHealth : MonoBehaviour, IsDamageable
 {
     public float maxHealth = 100f;
     private float currentHealth;
 
     void Start()
     {
-        currentHealth = maxHealth;    
+        currentHealth = maxHealth;
     }
 
-    // Test damage with space key to demonstrate functionality
-    void Update()
+    
+    public void TakeDamage(int amount)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("Space key pressed - NPC will take damage.");
-            TakeDamage(25f);
-        }
-    }
+        currentHealth -= amount;
+        Debug.Log($"NPC {gameObject.name} took {amount} damage. HP: {currentHealth}");
 
-    public void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-        Debug.Log("NPC "+gameObject.name+" took "+damage+" damage. Current health: "+currentHealth);
-        if (currentHealth < 0)
+        if (currentHealth <= 0f)
         {
             Die();
         }
@@ -32,9 +25,7 @@ public class NPCHealth : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("NPC "+gameObject.name+" has died.");
+        Debug.Log($"NPC {gameObject.name} has died.");
         Destroy(gameObject);
     }
-
-
 }
