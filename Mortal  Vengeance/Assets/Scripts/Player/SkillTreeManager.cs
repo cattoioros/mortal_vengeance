@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,8 +6,11 @@ public class SkillTreeManager : MonoBehaviour
 {
     public static SkillTreeManager instance { get; private set; }
 
-    public int availableSkillPoints = 0; // to be modified(base value for testing)
+    [SerializeField] private int availableSkillPoints = 0; // to be modified(base value for testing)
     private HashSet<string> unlockedSkills = new HashSet<string>();
+
+    public event Action<int> SkillPointsChanged;
+    public event Action SkillsChanged;
 
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private PlayerStatsManager playerStatsManager;
@@ -129,11 +133,27 @@ public class SkillTreeManager : MonoBehaviour
 
         // skill unlock
         unlockedSkills.Add(skillId);
-        availableSkillPoints -= skill.skillPointCost;
+        SpendSkillPoints(skill.skillPointCost);
         ApplySkillBonuses();
+
+        SkillsChanged?.Invoke();
 
         Debug.Log("Skill unlocked: " + skill.skillName);
         return true;
+    }
+
+    public void AddSkillPoints(int amount)
+    {
+        if (amount == 0) return;
+        availableSkillPoints = Mathf.Max(0, availableSkillPoints + amount);
+        SkillPointsChanged?.Invoke(availableSkillPoints);
+    }
+
+    private void SpendSkillPoints(int amount)
+    {
+        if (amount <= 0) return;
+        availableSkillPoints = Mathf.Max(0, availableSkillPoints - amount);
+        SkillPointsChanged?.Invoke(availableSkillPoints);
     }
 
     private void ApplySkillBonuses()

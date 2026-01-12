@@ -89,7 +89,7 @@ public class GrantSkillPointsOnTeleportOnce : MonoBehaviour
             return;
         }
 
-        SkillTreeManager.instance.availableSkillPoints += skillPointsToGrant;
+        SkillTreeManager.instance.AddSkillPoints(skillPointsToGrant);
 
         if (showMessage)
         {

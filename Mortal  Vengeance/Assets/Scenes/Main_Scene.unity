@@ -2982,7 +2982,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: ce73a35450ff20d4ab05c1f0c3cec2dc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 34.309998
+      value: 34.2
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: ce73a35450ff20d4ab05c1f0c3cec2dc, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7555,6 +7555,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1492680075615323762, guid: 5e9dfc284f47ee240a7bf279a27c0b30, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1827998291}
+    - targetCorrespondingSourceObject: {fileID: 1492680075615323762, guid: 5e9dfc284f47ee240a7bf279a27c0b30, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1827998299}
   m_SourcePrefab: {fileID: 100100000, guid: 5e9dfc284f47ee240a7bf279a27c0b30, type: 3}
 --- !u!1001 &448788865
 PrefabInstance:
@@ -17331,6 +17334,9 @@ MonoBehaviour:
   teleportOnEnter: 0
   interactKey: 19
   playerTag: Player
+  onTeleported:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1119861606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 659809102793452875, guid: 43a2c776338fcb84ca02d902bbfd0a20, type: 3}
@@ -18959,6 +18965,22 @@ PrefabInstance:
     - target: {fileID: 4052847285747274012, guid: c89b8032a98d2a242afb85a9e1bf46b7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6692577440043857269, guid: c89b8032a98d2a242afb85a9e1bf46b7, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6692577440043857269, guid: c89b8032a98d2a242afb85a9e1bf46b7, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6692577440043857269, guid: c89b8032a98d2a242afb85a9e1bf46b7, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 6692577440043857269, guid: c89b8032a98d2a242afb85a9e1bf46b7, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -23277,7 +23299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 442594, guid: 24579a71f306fa349abdad24a69e4d08, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 42.549988
+      value: 42.545
       objectReference: {fileID: 0}
     - target: {fileID: 442594, guid: 24579a71f306fa349abdad24a69e4d08, type: 3}
       propertyPath: m_LocalRotation.w
@@ -28537,8 +28559,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   cameraCollisionRadius: 0.2
-  cameraCollisionOffset: 0.2
   collisionDamp: 10
+  cameraCollisionOffset: 0.2
+  lockCameraRotation: 0
 --- !u!1001 &1781636634
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29529,11 +29552,30 @@ MonoBehaviour:
   teleportOnEnter: 0
   interactKey: 19
   playerTag: Player
+  onTeleported:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1827998295 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2304928431846628552, guid: 5e9dfc284f47ee240a7bf279a27c0b30, type: 3}
   m_PrefabInstance: {fileID: 443461595}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1827998299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827998286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3c012786e704f54290617b007f55fd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrantSkillPointsOnTeleportOnce
+  skillPointsToGrant: 5
+  grantKey: 475603400fc14914a55ecda7358d523e
+  rememberAcrossSessions: 0
+  showMessage: 1
 --- !u!1001 &1830261150
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29840,6 +29882,7 @@ MonoBehaviour:
   currentHealth: 0
   currentMana: 0
   currentXP: 0
+  playerHealthSlider: {fileID: 0}
 --- !u!1001 &1834743667
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32897,6 +32940,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1492680075615323762, guid: 5e9dfc284f47ee240a7bf279a27c0b30, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1966082795}
+    - targetCorrespondingSourceObject: {fileID: 1492680075615323762, guid: 5e9dfc284f47ee240a7bf279a27c0b30, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1966082803}
   m_SourcePrefab: {fileID: 100100000, guid: 5e9dfc284f47ee240a7bf279a27c0b30, type: 3}
 --- !u!1 &1966082794 stripped
 GameObject:
@@ -32920,11 +32966,30 @@ MonoBehaviour:
   teleportOnEnter: 0
   interactKey: 19
   playerTag: Player
+  onTeleported:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1966082799 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2304928431846628552, guid: 5e9dfc284f47ee240a7bf279a27c0b30, type: 3}
   m_PrefabInstance: {fileID: 1966082793}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1966082803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966082794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3c012786e704f54290617b007f55fd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrantSkillPointsOnTeleportOnce
+  skillPointsToGrant: 5
+  grantKey: 4a0b78e2827c4b28bd54d01bf3f59bc6
+  rememberAcrossSessions: 0
+  showMessage: 1
 --- !u!1001 &1974116955
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35493,14 +35558,6 @@ SceneRoots:
   - {fileID: 1474316762}
   - {fileID: 883671735}
   - {fileID: 461692675}
-  - {fileID: 1127370923}
-  - {fileID: 524503754}
-  - {fileID: 1293440755}
-  - {fileID: 559373428}
-  - {fileID: 662567539}
-  - {fileID: 1966082793}
-  - {fileID: 443461595}
-  - {fileID: 776917159}
   - {fileID: 1871901166}
   - {fileID: 2094867530}
   - {fileID: 1230643019}

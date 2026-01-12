@@ -26,6 +26,19 @@ public class SkillTreeUI : MonoBehaviour
         skillData = SkillData.instance;
     }
 
+    private void OnEnable()
+    {
+        // When the UI is opened (SetActive(true)), refresh immediately.
+        if (skillTreeManager == null) skillTreeManager = SkillTreeManager.instance;
+        Refresh();
+    }
+
+    private void OnDisable()
+    {
+        // Ensure we don't keep stale subscriptions if the UI object is disabled/enabled.
+        Unsubscribe();
+    }
+
     private void Start()
     {
         if (skillTreeManager == null)
@@ -44,6 +57,8 @@ public class SkillTreeUI : MonoBehaviour
             enabled = false;
             return;
         }
+
+        Subscribe();
 
         if (skillButtonContainer == null || skillButtonPrefab == null)
         {
@@ -65,6 +80,32 @@ public class SkillTreeUI : MonoBehaviour
             unlockButton.onClick.AddListener(OnUnlockButtonClicked);
         }
         
+        Refresh();
+    }
+
+    private void Subscribe()
+    {
+        if (skillTreeManager == null) return;
+        skillTreeManager.SkillPointsChanged -= OnSkillTreeChanged;
+        skillTreeManager.SkillsChanged -= OnSkillTreeChanged;
+        skillTreeManager.SkillPointsChanged += OnSkillTreeChanged;
+        skillTreeManager.SkillsChanged += OnSkillTreeChanged;
+    }
+
+    private void Unsubscribe()
+    {
+        if (skillTreeManager == null) return;
+        skillTreeManager.SkillPointsChanged -= OnSkillTreeChanged;
+        skillTreeManager.SkillsChanged -= OnSkillTreeChanged;
+    }
+
+    private void OnSkillTreeChanged(int _)
+    {
+        Refresh();
+    }
+
+    private void OnSkillTreeChanged()
+    {
         Refresh();
     }
 
