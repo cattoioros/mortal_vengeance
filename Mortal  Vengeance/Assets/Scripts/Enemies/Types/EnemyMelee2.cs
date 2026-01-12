@@ -68,6 +68,8 @@ public class EnemyMelee2 : EnemyBase
 
         }
     }
+
+
 }
 
 
