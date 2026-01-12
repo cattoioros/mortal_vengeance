@@ -18,6 +18,8 @@ public class PlayerTeleportTrigger : MonoBehaviour
     [Header("Player")]
     [SerializeField] private string playerTag = "Player";
 
+    // test
+    
     private Transform currentPlayer;
 
     private void Reset()
@@ -77,6 +79,10 @@ public class PlayerTeleportTrigger : MonoBehaviour
         }
 
         TeleportStatusUI.Hide();
+
+        // Teleporting often skips OnTriggerExit, so clear trigger state to avoid
+        // the Interact key triggering teleports again elsewhere.
+        currentPlayer = null;
 
         var cc = player.GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
