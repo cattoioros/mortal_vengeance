@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8462368373617599108}
+  - component: {fileID: 7405706994451411837}
   m_Layer: 0
   m_Name: DemonicSword_Equiped
   m_TagString: Untagged
@@ -34,6 +35,19 @@ Transform:
   - {fileID: 5957470557373070435}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7405706994451411837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1889199570050658849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c02447198db64e3da06315349905d54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitboxTrigger
+  playerAttack: {fileID: 0}
 --- !u!1 &4424216037445017909
 GameObject:
   m_ObjectHideFlags: 0
