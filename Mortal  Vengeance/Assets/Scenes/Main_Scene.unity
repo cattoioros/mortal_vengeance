@@ -27711,13 +27711,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   player: {fileID: 902092468}
-  defaultOffset: {x: 0, y: 0, z: 0}
-  rotationSpeed: 100
-  minYAngle: -70
+  defaultOffset: {x: 0, y: -2, z: -2}
+  rotationSpeed: 7.5
+  minYAngle: 0
   maxYAngle: 100
   collisionLayers:
     serializedVersion: 2
-    m_Bits: 65
+    m_Bits: 1
   cameraCollisionRadius: 0.2
   cameraCollisionOffset: 0.2
   collisionDamp: 10
@@ -34207,6 +34207,7 @@ GameObject:
   - component: {fileID: 2126475884}
   - component: {fileID: 2126475887}
   - component: {fileID: 2126475885}
+  - component: {fileID: 2126475886}
   m_Layer: 5
   m_Name: PlayerPreviewCamera
   m_TagString: Untagged
@@ -34566,3 +34567,5 @@ SceneRoots:
   - {fileID: 1966082793}
   - {fileID: 443461595}
   - {fileID: 776917159}
+  - {fileID: 576152026}
+  - {fileID: 1871901166}
