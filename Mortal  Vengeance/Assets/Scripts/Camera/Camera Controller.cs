@@ -6,6 +6,9 @@ public class CameraController : MonoBehaviour
     public Transform player;
     public Vector3 defaultOffset;
 
+    [Tooltip("Tag used to auto-find the player if the reference is missing/destroyed.")]
+    public string playerTag = "Player";
+
     [Header("Rotation Settings")]
     public float rotationSpeed = 2.0f;
     public float minYAngle = -35f;
@@ -27,9 +30,53 @@ public class CameraController : MonoBehaviour
     private float currentDistance;
     private Vector3 directionNormalized;
 
+    private bool initialized;
+
     void Start()
     {
-        if (defaultOffset == Vector3.zero) 
+        EnsurePlayer();
+        if (player != null)
+        {
+            InitializeIfNeeded();
+        }
+    }
+
+    void LateUpdate()
+    {
+        EnsurePlayer();
+        if (player == null) return;
+        InitializeIfNeeded();
+
+        HandleCamera();
+        HandleWallCollision(); 
+    }
+
+    private void EnsurePlayer()
+    {
+        if (player != null) return;
+
+        if (GameManager.instance != null && GameManager.instance.PlayerTransform != null)
+        {
+            player = GameManager.instance.PlayerTransform;
+            return;
+        }
+
+        var playerObj = GameObject.FindGameObjectWithTag(playerTag);
+        if (playerObj != null) player = playerObj.transform;
+    }
+
+    private void InitializeIfNeeded()
+    {
+        if (initialized) return;
+
+        if (pivot == null)
+        {
+            pivot = new GameObject("CameraPivot").transform;
+            pivot.rotation = Quaternion.identity;
+        }
+
+        // Setam offset-ul initial daca nu e setat in inspector
+        if (defaultOffset == Vector3.zero)
             defaultOffset = transform.position - player.position;
 
         directionNormalized = defaultOffset.normalized;
@@ -37,7 +84,6 @@ public class CameraController : MonoBehaviour
 
         pivot = new GameObject("CameraPivot").transform;
         pivot.position = player.position;
-        pivot.rotation = Quaternion.identity;
 
         transform.SetParent(pivot);
         transform.localPosition = defaultOffset;

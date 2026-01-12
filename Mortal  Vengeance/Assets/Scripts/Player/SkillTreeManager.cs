@@ -5,10 +5,11 @@ public class SkillTreeManager : MonoBehaviour
 {
     public static SkillTreeManager instance { get; private set; }
 
-    public int availableSkillPoints = 10; // to be modified(base value for testing)
+    public int availableSkillPoints = 0; // to be modified(base value for testing)
     private HashSet<string> unlockedSkills = new HashSet<string>();
 
     [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private PlayerStatsManager playerStatsManager;
 
     private PlayerStatsSnapshot baseStats;
     private bool hasBaseStats;
@@ -52,6 +53,15 @@ public class SkillTreeManager : MonoBehaviour
             if (playerStats == null)
             {
                 playerStats = FindAnyObjectByType<PlayerStats>();
+            }
+        }
+
+        if (playerStatsManager == null)
+        {
+            playerStatsManager = GetComponent<PlayerStatsManager>();
+            if (playerStatsManager == null)
+            {
+                playerStatsManager = FindAnyObjectByType<PlayerStatsManager>();
             }
         }
 
@@ -135,6 +145,9 @@ public class SkillTreeManager : MonoBehaviour
             CacheBaseStats();
         }
 
+        float oldMaxHealth = playerStats.maxHealth;
+        float oldMaxMana = playerStats.maxMana;
+
         // Reset to base stats then re-apply all unlocked bonuses.
         playerStats.maxHealth = baseStats.maxHealth;
         playerStats.healthRegeneration = baseStats.healthRegeneration;
@@ -156,6 +169,25 @@ public class SkillTreeManager : MonoBehaviour
             {
                 ApplyBonus(bonus.statName, bonus.value);
             }
+        }
+
+        // Keep current values consistent with new max values.
+        if (playerStatsManager != null)
+        {
+            // Preserve percent filled when max changes.
+            if (oldMaxHealth > 0f)
+            {
+                float hpPercent = Mathf.Clamp01(playerStatsManager.currentHealth / oldMaxHealth);
+                playerStatsManager.currentHealth = hpPercent * playerStats.maxHealth;
+            }
+            playerStatsManager.currentHealth = Mathf.Clamp(playerStatsManager.currentHealth, 0f, playerStats.maxHealth);
+
+            if (oldMaxMana > 0f)
+            {
+                float manaPercent = Mathf.Clamp01(playerStatsManager.currentMana / oldMaxMana);
+                playerStatsManager.currentMana = manaPercent * playerStats.maxMana;
+            }
+            playerStatsManager.currentMana = Mathf.Clamp(playerStatsManager.currentMana, 0f, playerStats.maxMana);
         }
     }
 

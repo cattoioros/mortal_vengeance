@@ -16,6 +16,11 @@ public class SystemMenuController : MonoBehaviour
 
     public static bool IsUIBlockingInput { get; private set; }
 
+    public static void SetUIBlockingInput(bool value)
+    {
+        IsUIBlockingInput = value;
+    }
+
     void Start()
     {
         Debug.Log("SystemMenuController START");

@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Collider))]
 public class PlayerTeleportTrigger : MonoBehaviour
@@ -18,8 +20,12 @@ public class PlayerTeleportTrigger : MonoBehaviour
     [Header("Player")]
     [SerializeField] private string playerTag = "Player";
 
-    // test
-    
+    [Header("Events")]
+    [Tooltip("Invoked after the player is teleported.")]
+    public UnityEvent onTeleported;
+
+    public event Action<Transform> Teleported;
+
     private Transform currentPlayer;
 
     private void Reset()
@@ -97,6 +103,9 @@ public class PlayerTeleportTrigger : MonoBehaviour
         }
 
         if (cc != null) cc.enabled = true;
+
+        onTeleported?.Invoke();
+        Teleported?.Invoke(player);
     }
 
 #if UNITY_EDITOR
