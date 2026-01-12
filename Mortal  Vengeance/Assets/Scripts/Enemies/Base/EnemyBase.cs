@@ -34,6 +34,12 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     protected virtual void Start()
     {
 
+        if (healthBar == null)
+        {
+            healthBar = GetComponentInChildren<EnemyHealthUI>();
+        }
+
+
         currentHealth = maxHealth;
         if (healthBar != null )
         {
@@ -216,6 +222,9 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     // Update is called once per frame
     protected virtual void Update()
     {
+
+       
+
 
        
         //Debug.Log(currentState);

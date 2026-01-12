@@ -1,3 +1,4 @@
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.UI;
 public class PlayerStatsManager : MonoBehaviour
@@ -42,8 +43,8 @@ public class PlayerStatsManager : MonoBehaviour
 
     private void UpdateUI()
     {
-        // Folosim metodele tale de calcul procentual pentru a seta slider-ele (0 la 1)
-        if (playerHealthSlider != null) playerHealthSlider.value = GetHealthPercent();
+        if (playerHealthSlider != null) 
+            playerHealthSlider.value = currentHealth/stats.maxHealth;
        
     }
 
@@ -112,6 +113,10 @@ public void LoadGame()
         currentHealth = Mathf.Max(currentHealth, 0);
 
         Debug.Log("Player lovitt" + Time.time);
+
+        UpdateUI();
+
+        Debug.Log(currentHealth);
 
         if (currentHealth <= 0)
         {
