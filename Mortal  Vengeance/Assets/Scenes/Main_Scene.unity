@@ -17367,6 +17367,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SystemMenuController
   systemMenu: {fileID: 1952450525}
   settingsMenu: {fileID: 1518891506}
+  inventoryToggle: {fileID: 1984025658}
+  hotbarRoot: {fileID: 422239035}
 --- !u!4 &1121485930
 Transform:
   m_ObjectHideFlags: 0

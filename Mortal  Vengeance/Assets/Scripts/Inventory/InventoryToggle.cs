@@ -84,4 +84,29 @@ public class InventoryToggle : MonoBehaviour
             Time.timeScale = 1f;
         }
     }
+
+
+    public void ForceCloseInventory()
+    {
+        if (!isOpen)
+            return;
+
+        isOpen = false;
+        inventoryPanel.SetActive(false);
+
+        // move hotbar back to HUD
+        hotbarPanel.SetParent(hotbarHUDParent, false);
+
+        hotbarPanel.anchorMin = savedAnchorMin;
+        hotbarPanel.anchorMax = savedAnchorMax;
+        hotbarPanel.pivot = savedPivot;
+        hotbarPanel.anchoredPosition = savedAnchoredPosition;
+
+        hotbarLayoutGroup.enabled = true;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Time.timeScale = 1f;
+    }
+
 }
