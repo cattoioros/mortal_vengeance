@@ -134,7 +134,7 @@ public class EnemyRanged : EnemyBase
 
     private void LateUpdate()
     {
-
+        
         initSfoara();
     }
 
@@ -249,6 +249,7 @@ public class EnemyRanged : EnemyBase
     {
         base.Update();
 
+       
         // Face player
         Vector3 lookDir = playerTarget.position - transform.position;
         lookDir.y = 0f;

@@ -19,6 +19,9 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     [SerializeField] protected int baseDmg;
     [SerializeField] protected float attackCooldown;
 
+    [Header("UI")]
+    [SerializeField] protected EnemyHealthUI healthBar;
+
     protected int currentHealth; 
     protected EnemyState currentState = EnemyState.Idle;
     protected NavMeshAgent agent; 
@@ -32,6 +35,11 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     {
 
         currentHealth = maxHealth;
+        if (healthBar != null )
+        {
+            healthBar.UpdateHealthBar(currentHealth, maxHealth);
+        }
+
         currentState = EnemyState.Idle;
 
         //Preluarea agentului pentru miscare
@@ -172,6 +180,9 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
         currentHealth -= amount;
         Debug.Log("Am luat damage"+ amount);
 
+        if (healthBar != null)
+            healthBar.UpdateHealthBar(currentHealth, maxHealth);
+
         if (currentHealth <= 0 && !isDead )
         {
             isDead = true;
@@ -205,6 +216,8 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     // Update is called once per frame
     protected virtual void Update()
     {
+
+       
         //Debug.Log(currentState);
         if (playerTarget == null || currentState == EnemyState.Dead)
             return;

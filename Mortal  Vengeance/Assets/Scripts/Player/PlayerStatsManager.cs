@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.UI;
 public class PlayerStatsManager : MonoBehaviour
 {
     public PlayerStats stats;
@@ -8,6 +8,9 @@ public class PlayerStatsManager : MonoBehaviour
     public float currentHealth;
     public float currentMana;
     public float currentXP;
+
+    [Header("UI")]
+    public Slider playerHealthSlider;
 
     void Awake()
     {
@@ -33,9 +36,18 @@ public class PlayerStatsManager : MonoBehaviour
         // Exemplu rapid de testare (sterge in varianta finala)
         if (Input.GetKeyDown(KeyCode.F5)) SaveGame();
         if (Input.GetKeyDown(KeyCode.F9)) LoadGame();
+        
+        UpdateUI();
     }
 
-public void SaveGame()
+    private void UpdateUI()
+    {
+        // Folosim metodele tale de calcul procentual pentru a seta slider-ele (0 la 1)
+        if (playerHealthSlider != null) playerHealthSlider.value = GetHealthPercent();
+       
+    }
+
+    public void SaveGame()
 {
     // Aici folosim constructorul inteligent care copiaza totul singur
     PlayerData data = new PlayerData(this);
@@ -180,7 +192,11 @@ public void LoadGame()
         Debug.Log("Ai murit." + Time.time);
     }
 
-    public float GetHealthPercent() => currentHealth / stats.maxHealth;
-    public float GetManaPercent() => currentMana / stats.maxMana;
+    public float GetHealthPercent()
+    {
+        if (stats.maxHealth <= 0) return 0;
+        return currentHealth / stats.maxHealth;
+    }
+        public float GetManaPercent() => currentMana / stats.maxMana;
     public float GetXPPercent() => currentXP / stats.nextLevelXP;
 }
