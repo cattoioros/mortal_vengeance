@@ -5,9 +5,6 @@ public class ItemPickup : MonoBehaviour
 {
     public ItemData item;
 
-    [Header("UI")]
-    [SerializeField] private GameObject pickupPrompt; 
-
     private bool playerInRange;
     private bool pickedUp;
 
@@ -29,7 +26,10 @@ public class ItemPickup : MonoBehaviour
         inventory.AddItem(item);
 
         pickedUp = true;
-        HidePrompt();
+
+        if (PickupTextManager.Instance != null)
+            PickupTextManager.Instance.HidePrompt();
+
         Destroy(gameObject);
     }
 
@@ -38,7 +38,8 @@ public class ItemPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            ShowPrompt();
+            if (PickupTextManager.Instance != null)
+                PickupTextManager.Instance.ShowPrompt();
         }
     }
 
@@ -47,19 +48,10 @@ public class ItemPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            HidePrompt();
+            if (PickupTextManager.Instance != null)
+                PickupTextManager.Instance.HidePrompt();
         }
     }
 
-    void ShowPrompt()
-    {
-        if (pickupPrompt != null)
-            pickupPrompt.SetActive(true);
-    }
-
-    void HidePrompt()
-    {
-        if (pickupPrompt != null)
-            pickupPrompt.SetActive(false);
-    }
+  
 }

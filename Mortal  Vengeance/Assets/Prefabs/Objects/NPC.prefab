@@ -1949,6 +1949,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCHealth
   maxHealth: 20
+  potionPickupPrefabs:
+  - {fileID: 629966333602612925, guid: 7e0bcdb994471fd40916793ac5003254, type: 3}
+  - {fileID: 5222547772809524498, guid: b6aac631d9e178d4ba174b3a19059f29, type: 3}
+  minPotionDrop: 1
+  maxPotionDrop: 2
 --- !u!114 &-1976368333051098118
 MonoBehaviour:
   m_ObjectHideFlags: 0

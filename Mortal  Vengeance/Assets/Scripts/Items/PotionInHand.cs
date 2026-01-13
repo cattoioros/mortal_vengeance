@@ -5,6 +5,7 @@ public class PotionInHand : MonoBehaviour
     public int healAmount;
     private bool used = false;
 
+    // Method to use the potion
     public void Use(GameObject player)
     {
         if (used) return;

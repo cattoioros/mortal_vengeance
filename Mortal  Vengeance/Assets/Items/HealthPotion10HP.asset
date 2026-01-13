@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3ac2692e78c89f48ba987678dd19703, type: 3}
-  m_Name: HealthPotion
+  m_Name: HealthPotion10HP
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItemData
-  itemName: HealthPotion
-  icon: {fileID: 21300000, guid: 4e8b35477a7fb5a46870c1973a523722, type: 3}
+  itemName: HealthPotion10HP
+  icon: {fileID: 21300000, guid: 9c0039c84e5c49b4b9ba046ac33c6db5, type: 3}
   itemType: 3
   healAmount: 10
   equippedPrefab: {fileID: 5940244874849098562, guid: d2919a9c86df8bc419b4fde2a92135d2, type: 3}
