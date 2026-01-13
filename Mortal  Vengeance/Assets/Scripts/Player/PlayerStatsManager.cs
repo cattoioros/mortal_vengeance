@@ -1,10 +1,17 @@
 using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using NUnit.Framework;
 public class PlayerStatsManager : MonoBehaviour
 {
     public PlayerStats stats;
-
+    
+    [SerializeField] private Animator animator;
+     [SerializeField] private SystemMenuController menu;
 
     public float currentHealth;
     public float currentMana;
@@ -192,9 +199,21 @@ public void LoadGame()
         currentMana = stats.maxMana;
     }
 
+IEnumerator DeathSequence()
+{
+    yield return new WaitForSeconds(2.2f); // cât durează animația
+
+    menu.Restart();
+}
     private void Die()
     {
+        animator.SetTrigger("Dead");
+            GetComponent<PlayerMovement>().enabled = false;
+    GetComponent<PlayerAttack>().enabled = false;
+
+    GetComponent<CharacterController>().enabled = false;
         Debug.Log("Ai murit." + Time.time);
+        StartCoroutine(DeathSequence());
     }
 
     public float GetHealthPercent()
