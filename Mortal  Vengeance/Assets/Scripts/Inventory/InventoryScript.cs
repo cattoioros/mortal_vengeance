@@ -48,40 +48,37 @@ public class InventorySystem : MonoBehaviour
 
         ItemData draggedItem = from.currentItem;
 
-        //EQUIPMENT LOGIC 
-        if (to.slotType == InventorySlot.SlotType.Equipment)
+        //equipment logic 
+        if (to.slotType == InventorySlot.SlotType.Equipment && to.index == 1)
         {
-            // weapon slot (index 1)
-            if (to.index == 1)
+            if (draggedItem is WeaponItemData weapon)
             {
-                // doar arme
-                if (draggedItem.itemType != ItemType.Weapon)
-                {
-                    Debug.Log("Only weapons can be placed here!");
-                    return;
-                }
-
-                WeaponItemData weapon = draggedItem as WeaponItemData;
-                if (weapon == null)
-                    return;
-
                 WeaponManager wm = FindObjectOfType<WeaponManager>();
                 if (wm != null)
-                {
                     wm.EquipWeapon(weapon);
-                }
+            }
+            else if (draggedItem is ConsumableItemData consumable)
+            {
+                ConsumableManager cm = FindObjectOfType<ConsumableManager>();
+                if (cm != null)
+                    cm.EquipConsumable(consumable);
             }
         }
 
-        //UNEQUIP LOGIC
+
+        //unequip logic
         if (from.slotType == InventorySlot.SlotType.Equipment && from.index == 1)
         {
             WeaponManager wm = FindObjectOfType<WeaponManager>();
             if (wm != null)
-            {
                 wm.Unequip();
-            }
+
+            ConsumableManager cm = FindObjectOfType<ConsumableManager>();
+            if (cm != null)
+                cm.Unequip();
         }
+
+
 
         // ITEM UI 
         to.SetItem(draggedItem);
