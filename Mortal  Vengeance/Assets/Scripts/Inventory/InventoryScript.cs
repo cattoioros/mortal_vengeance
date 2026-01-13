@@ -100,4 +100,49 @@ public class InventorySystem : MonoBehaviour
 
         Debug.Log($"Swapped slot {a.index} with slot {b.index}");
     }
+
+    public void EquipFromHotbar(InventorySlot hotbarSlot)
+    {
+        if (hotbarSlot == null || hotbarSlot.currentItem == null)
+            return;
+
+        
+        InventorySlot equipmentSlot = null;
+
+        foreach (Transform child in FindObjectOfType<InventoryUIManager>().equipmentPanel)
+        {
+            InventorySlot slot = child.GetComponent<InventorySlot>();
+            if (slot != null && slot.index == 1)
+            {
+                equipmentSlot = slot;
+                break;
+            }
+        }
+
+        if (equipmentSlot == null)
+            return;
+
+        
+        if (!equipmentSlot.IsEmpty())
+        {
+            hotbarSlot.SetItem(equipmentSlot.currentItem);
+        }
+
+        
+        equipmentSlot.SetItem(hotbarSlot.currentItem);
+        hotbarSlot.Clear();
+
+        
+        if (equipmentSlot.currentItem is WeaponItemData weapon)
+        {
+            FindObjectOfType<WeaponManager>()?.EquipWeapon(weapon);
+            FindObjectOfType<ConsumableManager>()?.Unequip();
+        }
+        else if (equipmentSlot.currentItem is ConsumableItemData consumable)
+        {
+            FindObjectOfType<ConsumableManager>()?.EquipConsumable(consumable);
+            FindObjectOfType<WeaponManager>()?.Unequip();
+        }
+    }
+
 }

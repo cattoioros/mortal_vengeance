@@ -10004,6 +10004,7 @@ MonoBehaviour:
   inventoryGrid: {fileID: 215492471}
   hotbarGrid: {fileID: 422239036}
   slotPrefab: {fileID: 3822192664927692344, guid: 1179a0d8a556a6e469b791d60d9bec1c, type: 3}
+  hotbarSlots: []
 --- !u!114 &597064848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22438,6 +22439,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 862c3e07fb31a40dda071d86b1befd77, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1831297586}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 862c3e07fb31a40dda071d86b1befd77, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1831297587}
   m_SourcePrefab: {fileID: 100100000, guid: 862c3e07fb31a40dda071d86b1befd77, type: 3}
 --- !u!1001 &1362221399
 PrefabInstance:
@@ -30598,6 +30602,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableManager
   itemHolder: {fileID: 541744808}
+--- !u!114 &1831297587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831297567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00998331cfd757c4588f83ccb405ec0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotbarManager
 --- !u!1001 &1834743667
 PrefabInstance:
   m_ObjectHideFlags: 0
