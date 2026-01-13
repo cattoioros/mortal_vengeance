@@ -5,14 +5,8 @@ public class HotbarManager : MonoBehaviour
     private InventorySlot[] hotbarSlots;
     private int selectedIndex = -1;
 
-    private WeaponManager weaponManager;
-    private ConsumableManager consumableManager;
-
     void Start()
     {
-        weaponManager = GetComponent<WeaponManager>();
-        consumableManager = GetComponent<ConsumableManager>();
-
         InventoryUIManager ui = FindObjectOfType<InventoryUIManager>();
         if (ui != null)
         {
@@ -38,33 +32,15 @@ public class HotbarManager : MonoBehaviour
         if (index < 0 || index >= hotbarSlots.Length)
             return;
 
+        
         if (selectedIndex == index)
             return;
 
         selectedIndex = index;
 
         InventorySlot slot = hotbarSlots[index];
-        EquipFromSlot(slot);
-    }
 
-    void EquipFromSlot(InventorySlot slot)
-    {
-        if (slot.currentItem == null)
-        {
-            weaponManager?.Unequip();
-            consumableManager?.Unequip();
-            return;
-        }
-
-        if (slot.currentItem is WeaponItemData weapon)
-        {
-            consumableManager?.Unequip();
-            weaponManager?.EquipWeapon(weapon);
-        }
-        else if (slot.currentItem is ConsumableItemData consumable)
-        {
-            weaponManager?.Unequip();
-            consumableManager?.EquipConsumable(consumable);
-        }
+       
+        InventorySystem.Instance?.EquipFromHotbar(slot);
     }
 }
