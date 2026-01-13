@@ -50,10 +50,10 @@ public class MinionSpawner : EnemyBase
                 initPool(1);
             }
 
-            //Scoatem minionul din pool
+            //Minion to be spawned out of the pool
             GameObject minionToSpawn = minionPool.Dequeue();
 
-            //Activam minionul si il pozitionam
+            //Positioning the minion 
             minionToSpawn.transform.position = spawnPoint.position;
             minionToSpawn.transform.rotation = Quaternion.identity;
             minionToSpawn.SetActive(true);
@@ -63,17 +63,15 @@ public class MinionSpawner : EnemyBase
 
     public void ReturnMinionToPool(GameObject minion)
     {
-        //Dezactivam obiectul
+        //Deactivating the minion and putting it back in the pool
         minion.SetActive(false);
-
-        //Il punem inapoi in coada
         minionPool.Enqueue(minion);
     }
 
 
     public void spawnMinion()
     {
-        // Verificam daca mai sunt minioni in pool
+        // If there are no more minions in the pool, we create more
             if (minionPool.Count > 0)
             {
                 GetMinion();
@@ -115,6 +113,16 @@ public class MinionSpawner : EnemyBase
             if (animator != null) animator.SetTrigger("TriggerAttack");
 
 
+        }
+    }
+
+    protected override void Die()
+    {
+        base.Die();
+
+        if (audioController != null)
+        {
+            audioController.playDeathSound();
         }
     }
 

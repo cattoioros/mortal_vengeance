@@ -3,14 +3,14 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-//Starile inamicilor
+//Enemy States
 public enum EnemyState { Idle, Chase, Attack, Dead}
 
 
 
 public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 {
-    //Caracteristici de baza ale tuturor inamicilor
+    //Enemy Stats
     [Header("Stats & Ranges")]
     [SerializeField] protected int maxHealth;
     [SerializeField] protected float movementSpeed;
@@ -29,6 +29,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
     protected Animator animator;
     protected bool isAttacking = false;
     protected bool isDead = false;
+    
 
 
     protected virtual void Start()
@@ -48,7 +49,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 
         currentState = EnemyState.Idle;
 
-        //Preluarea agentului pentru miscare
+        //Get AIAgent component 
         agent = GetComponent<NavMeshAgent>();
         if(agent != null)
         {
@@ -76,7 +77,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
         }
 
 
-        animator = GetComponentInChildren<Animator>(); // <- asta lipsea
+        animator = GetComponentInChildren<Animator>(); 
 
         if (animator == null)
             Debug.LogError(name + " nu are animator");
@@ -85,7 +86,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 
     }
 
-    //Comportamentul inamicilor cat timp jucatorul nu este in raza
+    //Idle state logic
     protected virtual void UpdateIdle()
     {
         if (agent != null)
@@ -96,7 +97,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
 
-        //Schimbarea starii in cazul in care jucatorul intra in raza inamicului
+        //Transition to Chase state
         if(distancePlayer <= chaseRange)
         {
             currentState = EnemyState.Chase;
@@ -105,7 +106,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
         }
     }
 
-    //Logica starii de urmarire
+    //Chase state logic
     protected virtual void UpdateChase()
     {
         if (agent != null)
@@ -134,14 +135,13 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 
         if (agent != null && animator != null)
         {
-            // currentSpeed este viteza pe care o folosește NavMeshAgent-ul
+
             float currentSpeed = agent.velocity.magnitude;
 
-            // Setează parametrul "Speed" în Animator
             animator.SetFloat("Speed", currentSpeed);
         }
     }
-    //Logica starii de atac
+    //Attack state logic
     protected virtual void UpdateAttack()
     {
 
@@ -154,7 +154,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 
         }
 
-        //Inamicul se roteste spre jucator
+        //Enemy rotates to face the player before the attack
         Vector3 lookDirection = playerTarget.position - transform.position;
 
         lookDirection.y = 0f;
@@ -166,7 +166,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
         }
 
-        //Verificam daca jucatorul iese din raza de atac
+        
         float distancePlayer = Vector3.Distance(transform.position, playerTarget.position);
 
         if (distancePlayer > attackRange)
@@ -175,12 +175,13 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
             if (agent != null) agent.isStopped = false;
             return;
         }
-        //Efectuare atacului
+        
+        
         AttackLogic();
 
     }
 
-    //Functie pentru ranirea inamicilor
+    //Enemy gets hit by player
     public virtual void TakeDamage(int amount)
     {
         currentHealth -= amount;
@@ -196,9 +197,10 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
         }
     }
 
-    //Moartea inamicilor
+    //Enemy Death
     protected virtual void Die()
     {
+        StopAllCoroutines();
         currentState = EnemyState.Dead;
         if(agent != null)
         {
@@ -233,7 +235,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
 
         if (isAttacking) return;
 
-        //Schimbarea intre stari
+        //State switch
         switch (currentState)
         {
             case EnemyState.Idle:
@@ -250,7 +252,7 @@ public class EnemyBase : MonoBehaviour, Interfaces.IsDamageable
         
     }
 
-    //Logica de atac( Va fi implementata de fiecare casa depinzand de tipul atacului)
+    //Attack logic, implemented by every type of enemy
     protected virtual void AttackLogic()
     {
 

@@ -60,6 +60,16 @@ public class EnemyMelee1 : EnemyBase
 
     }
 
+    protected override void Die()
+    {
+        base.Die();
+
+        if (audioController != null)
+        {
+            audioController.playDeathSound();
+        }
+    }
+
 
 }
 

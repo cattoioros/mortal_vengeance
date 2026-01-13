@@ -36,7 +36,9 @@ public class PromisedBoss : EnemyBase
     private bool is50Used = false;
     private Queue<GameObject> meteorPool = new Queue<GameObject>();
 
-    // ===== INITIALIZATION =====
+    private List<GameObject> activeIndicators = new List<GameObject>();
+
+   //Init
     protected override void Start()
     {
         base.Start();
@@ -69,7 +71,7 @@ public class PromisedBoss : EnemyBase
         meteorPool.Enqueue(meteor);
     }
 
-    // ===== ANIMATION EVENTS =====
+    // Animation Events
     public void ActivateWeaponHitbox()
     {
         weaponHitbox.damage = baseDmg;
@@ -91,7 +93,7 @@ public class PromisedBoss : EnemyBase
 
     public void OnAttackComplete() => isAttacking = false;
 
-    // ===== UTILITY =====
+    //movement for different attacks
     private IEnumerator MoveToPosition(Vector3 target, float speed)
     {
         while (Vector3.Distance(transform.position, target) > 0.1f)
@@ -103,7 +105,7 @@ public class PromisedBoss : EnemyBase
     }
 
 
-
+    //Apply dmg
     private void ApplySphereDamage(Vector3 center, float radius, int damage)
     {
         Collider[] hits = Physics.OverlapSphere(center, radius);
@@ -128,11 +130,13 @@ public class PromisedBoss : EnemyBase
         }
     }
 
-    // ===== ATTACK SEQUENCES =====
+    // Attack sequences
     private IEnumerator GroundStompSequence()
     {
         float radius = 1.5f;
         GameObject warning = Instantiate(sphereDmgIndicator, agent.transform);
+        activeIndicators.Add(warning);
+
         warning.transform.localPosition = new Vector3(0, 1f, 0);
         warning.transform.localScale = Vector3.one * (radius * 2f);
 
@@ -144,13 +148,14 @@ public class PromisedBoss : EnemyBase
 
     private IEnumerator GroundSlamSequence()
     {
-        // Immediate sword damage
+        // Sword swing damage
         Vector3 swordPos = transform.position + transform.forward * 1.5f;
         ApplyBoxDamage(swordPos, new Vector3(1f, 1f, 2f), baseDmg);
 
         // Delayed shockwave with warning
         Vector3 shockPos = transform.position + transform.forward * 4f;
         GameObject warning = Instantiate(groundDmgIndicator, shockPos, transform.rotation);
+        activeIndicators.Add(warning);
         warning.transform.localScale = new Vector3(0.4f, 0.0001f, 0.65f);
 
         yield return new WaitForSeconds(1.5f);
@@ -213,17 +218,19 @@ public class PromisedBoss : EnemyBase
         Vector3 targetPos = new Vector3(playerTarget.position.x, jumpPos.y, playerTarget.position.z);
         yield return MoveToPosition(targetPos, 5f);
 
-        // Plunge
+        //Plunge
         Vector3 plungePos = new Vector3(transform.position.x - 2f, transform.position.y - 2f, transform.position.z - 2f);
         yield return MoveToPosition(plungePos, 7f);
 
         GameObject warning = Instantiate(sphereDmgIndicator, transform.position, Quaternion.identity);
+        activeIndicators.Add(warning);
         warning.transform.localScale = Vector3.one * 7f;
 
         yield return new WaitForSeconds(0.5f);
 
         Destroy(warning);
         GameObject explosion = Instantiate(explosionIndicator, transform.position, Quaternion.identity);
+        activeIndicators.Add(explosion);
         explosion.transform.localScale = Vector3.one * 7f;
         audioController?.playExplosionCue();
 
@@ -241,7 +248,7 @@ public class PromisedBoss : EnemyBase
 
     private IEnumerator ExplodeSlashSequence()
     {
-        // Thrust
+        //Thrust
         yield return new WaitForSeconds(0.2f);
         animator?.SetTrigger("TriggerKick");
 
@@ -253,12 +260,14 @@ public class PromisedBoss : EnemyBase
         for (int i = 0; i < 2; i++)
         {
             GameObject warning = Instantiate(sphereDmgIndicator, thrustPos, Quaternion.identity);
+            activeIndicators.Add(warning);
             warning.transform.localScale = Vector3.one * 5f;
 
             yield return new WaitForSeconds(1f);
 
             Destroy(warning);
             GameObject explosion = Instantiate(explosionIndicator, thrustPos, Quaternion.identity);
+            activeIndicators.Add(explosion);
             explosion.transform.localScale = Vector3.one * 5f;
             audioController?.playExplosionCue();
 
@@ -290,8 +299,9 @@ public class PromisedBoss : EnemyBase
         light?.StopDescent();
         audioController?.playDescentCrash();
 
-        // Explosion effect
+        // Explosion
         GameObject explosion = Instantiate(descentExplosionFx, transform);
+        activeIndicators.Add(explosion);
         explosion.transform.localPosition = Vector3.zero;
         explosion.transform.localScale = Vector3.one * 30f;
         Destroy(explosion, 3f);
@@ -381,7 +391,7 @@ public class PromisedBoss : EnemyBase
         isAttacking = false;
     }
 
-    // ===== ATTACK LOGIC =====
+    
     protected override void AttackLogic()
     {
       
@@ -389,7 +399,7 @@ public class PromisedBoss : EnemyBase
 
         StopAllCoroutines();
 
-        // Half health special attack
+        // Half health attack
         if ((!is50Used && currentHealth <= maxHealth / 2))
         {
             is50Used = true;
@@ -406,7 +416,7 @@ public class PromisedBoss : EnemyBase
        
         if (distance > rangeAttackDistance)
         {
-            // Ranged attacks
+            // Ranged attack
             int choice = Random.Range(0,3);
             
             switch (choice)
@@ -437,7 +447,7 @@ public class PromisedBoss : EnemyBase
         }
         else
         {
-            // Melee attacks
+            // Melee attack
             int choice = Random.Range(0,3);
             switch (choice)
             {
@@ -488,5 +498,23 @@ public class PromisedBoss : EnemyBase
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
         }
         base.Update();
+    }
+
+    protected override void Die()
+    {
+        base.Die();
+
+        foreach (GameObject indicator in activeIndicators)
+        {
+            if (indicator != null)
+            {
+                Destroy(indicator);
+            }
+        }
+
+        if (audioController != null)
+        {
+            audioController.playDeathSound();
+        }
     }
 }

@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 
         }
 
-        //Preluare player-ului
+        //Getting the player
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
 
 

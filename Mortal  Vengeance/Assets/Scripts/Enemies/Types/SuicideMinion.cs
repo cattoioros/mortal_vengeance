@@ -14,7 +14,7 @@ public class SuicideMinion : EnemyBase
     private bool explosionStarted = false;
     private MinionSpawner mySpawner;
 
-    // Adaugă referință la renderer
+   
     private SkinnedMeshRenderer skeletonRenderer;
     private Material originalMaterial;
 
@@ -85,7 +85,7 @@ public class SuicideMinion : EnemyBase
             {
                 // Ignore self
                 if (enemy.gameObject == gameObject) continue;
-                // Ignora Spawner-ul
+                // Ignore Spawner
                 if (enemy.GetType() == typeof(MinionSpawner)) continue;
 
                 enemy.TakeDamage(explosionDmg / 2);

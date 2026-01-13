@@ -69,6 +69,16 @@ public class EnemyMelee2 : EnemyBase
         }
     }
 
+    protected override void Die()
+    {
+        base.Die();
+
+        if (audioController != null)
+        {
+            audioController.playDeathSound();
+        }
+    }
+
 
 }
 

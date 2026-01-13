@@ -54,8 +54,11 @@ public class EnemyRanged : EnemyBase
 
         initPool(initialPoolSize);
 
+        //Point where the arrow will sit on the string of the bow
         pozLoadSageata = punctLoadSageata.localPosition;
 
+
+        //arms of the bow rotation and saving the initial ones
         rotatieBrat1 = bratArc1.localEulerAngles;
         rotatieBrat2 = bratArc2.localEulerAngles;
         arrowInHand.SetActive(false);
@@ -87,7 +90,7 @@ public class EnemyRanged : EnemyBase
 
         Debug.Log("Luam sageata" + Time.time);
 
-        //Scoatem sageata din pool
+        //Arrow to be used out of the pool
         GameObject arrowToSpawn = arrowPool.Dequeue();
 
         arrowToSpawn.transform.position = punctLoadSageata.position;
@@ -123,7 +126,7 @@ public class EnemyRanged : EnemyBase
 
     private void initSfoara()
     {
-
+        //creating the string of the bow
         sfoara.useWorldSpace = true; 
         sfoara.positionCount = 3;
         sfoara.SetPosition(0, varfArc1.position);
@@ -143,7 +146,8 @@ public class EnemyRanged : EnemyBase
     {
         Debug.Log("Pool count" + arrowPool.Count);
         yield return new WaitForSeconds(delay);
-
+        
+        //the final rotation of the arms, after the string is pulled
         Vector3 brat1RotatieLoad = rotatieBrat1 + new Vector3(0, 0, -15);
         Vector3 brat2RotatieLoad = rotatieBrat2 + new Vector3(0, 0, -15);
 
@@ -154,6 +158,7 @@ public class EnemyRanged : EnemyBase
             audioController.playLoadBow();
         }
 
+        //continuos movement of the arms of the bow, and the arrow nock point, until it reaches the target
         float t = 0;
         while(t <1)
         {
@@ -205,6 +210,7 @@ public class EnemyRanged : EnemyBase
         Vector3 brat2Start = bratArc2.localEulerAngles;
         Vector3 punctStart = punctLoadSageata.localPosition;
 
+        //reset to the intial values
         while (t < 1)
         {
             t += Time.deltaTime / duration;
@@ -257,6 +263,16 @@ public class EnemyRanged : EnemyBase
         {
             Quaternion targetRot = Quaternion.LookRotation(lookDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
+        }
+    }
+
+    protected override void Die()
+    {
+        base.Die();
+
+        if (audioController != null)
+        {
+            audioController.playDeathSound();
         }
     }
 
