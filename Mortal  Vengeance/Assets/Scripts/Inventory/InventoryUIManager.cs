@@ -12,6 +12,9 @@ public class InventoryUIManager : MonoBehaviour
 
     private InventorySlot[] inventorySlots;
 
+    [HideInInspector]
+    public InventorySlot[] hotbarSlots;
+
     void Start()
     {
         
@@ -55,10 +58,12 @@ public class InventoryUIManager : MonoBehaviour
     //create 9 slots for hotbar panel
     void GenerateHotbarSlots()
     {
+        hotbarSlots = new InventorySlot[9];
         for (int i = 0; i < 9; i++)
         {
             InventorySlot slot = CreateSlot(hotbarGrid, i, InventorySlot.SlotType.Hotbar);
             slot.Clear();
+            hotbarSlots[i] = slot;
         }
     }
 

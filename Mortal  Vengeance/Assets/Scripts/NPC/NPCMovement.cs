@@ -19,20 +19,23 @@ public class NPCMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // move using Rigidbody (collision aware)
-        rb.linearVelocity = new Vector3(direction.x * moveSpeed,rb.linearVelocity.y,direction.z * moveSpeed);
+        Vector3 desiredVelocity = direction * moveSpeed;
+        desiredVelocity.y = rb.linearVelocity.y;
 
-        // rotate NPC to face the movement direction
+        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, desiredVelocity, 0.2f);
+
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation,targetRotation,rotationSpeed * Time.fixedDeltaTime));
+            rb.MoveRotation(
+                Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime)
+            );
         }
     }
 
     void Update()
     {
-        // decrease timer (logic)
+        // decrease timer
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
@@ -43,20 +46,24 @@ public class NPCMovement : MonoBehaviour
     //choose a new random direction for the NPC to move in & reset the timer
     void ChooseNewDirection()
     {
-        direction = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized; 
+        direction = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized;
         timer = changeDirectionTime;
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        //take the normal of the collision
         Vector3 normal = collision.contacts[0].normal;
 
-        //reflect the current direction using the normal
+        //remove velocity component towards the normal
+        Vector3 velocity = rb.linearVelocity;
+        velocity = Vector3.ProjectOnPlane(velocity, normal);
+        rb.linearVelocity = velocity;
+
+        //reflect direction
         direction = Vector3.Reflect(direction, normal).normalized;
 
-        //reset the timer
         timer = changeDirectionTime;
     }
+
 
 }
