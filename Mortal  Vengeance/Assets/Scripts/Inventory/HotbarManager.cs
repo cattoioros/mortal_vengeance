@@ -3,7 +3,6 @@ using UnityEngine;
 public class HotbarManager : MonoBehaviour
 {
     private InventorySlot[] hotbarSlots;
-    private int selectedIndex = -1;
 
     void Start()
     {
@@ -22,25 +21,21 @@ public class HotbarManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Alpha1 + i))
             {
-                SelectSlot(i);
+                EquipSlot(i);
             }
         }
     }
 
-    void SelectSlot(int index)
+    void EquipSlot(int index)
     {
         if (index < 0 || index >= hotbarSlots.Length)
             return;
 
-        
-        if (selectedIndex == index)
-            return;
-
-        selectedIndex = index;
-
         InventorySlot slot = hotbarSlots[index];
 
-       
+        if (slot.currentItem == null)
+            return;
+
         InventorySystem.Instance?.EquipFromHotbar(slot);
     }
 }
