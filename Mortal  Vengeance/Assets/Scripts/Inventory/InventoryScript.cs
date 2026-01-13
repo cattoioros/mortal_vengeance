@@ -8,7 +8,6 @@ public class InventorySystem : MonoBehaviour
 
     private InventorySlot selectedSlot;
     private InventorySlot equippedSlot;
-    private InventorySlot equippedSourceSlot;
     private InventoryUIManager ui;
     private WeaponManager weaponManager;
     private ConsumableManager consumableManager;
@@ -73,7 +72,6 @@ public class InventorySystem : MonoBehaviour
                 weaponManager?.Unequip();
 
                 equippedSlot = to;
-                equippedSourceSlot = from;
             }
         }
 
@@ -110,10 +108,7 @@ public class InventorySystem : MonoBehaviour
             return;
 
         if (ui == null || ui.equipmentPanel == null)
-        {
-            Debug.LogError("InventoryUIManager or equipmentPanel missing!");
             return;
-        }
 
         InventorySlot equipmentSlot = null;
 
@@ -130,20 +125,21 @@ public class InventorySystem : MonoBehaviour
         if (equipmentSlot == null)
             return;
 
-        // SAFE SWAP
-        ItemData previous = equipmentSlot.currentItem;
+        ItemData previouslyEquipped = equipmentSlot.currentItem;
 
         equipmentSlot.SetItem(hotbarSlot.currentItem);
         hotbarSlot.Clear();
 
-        if (previous != null)
+        if (previouslyEquipped != null)
         {
-            hotbarSlot.SetItem(previous);
+            hotbarSlot.SetItem(previouslyEquipped);
         }
 
         equippedSlot = equipmentSlot;
-        equippedSourceSlot = hotbarSlot;
 
+        
+
+        
         if (equipmentSlot.currentItem is WeaponItemData weapon)
         {
             weaponManager?.EquipWeapon(weapon);
@@ -157,19 +153,19 @@ public class InventorySystem : MonoBehaviour
     }
 
 
+
+
+
+
     public void ConsumeEquippedItem()
     {
         if (equippedSlot == null)
             return;
 
         equippedSlot.Clear();
-
-        if (equippedSourceSlot != null)
-            equippedSourceSlot.Clear();
-
         equippedSlot = null;
-        equippedSourceSlot = null;
     }
+
 
 
 
