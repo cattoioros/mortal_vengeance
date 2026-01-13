@@ -6896,6 +6896,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8959795034246810733, guid: 1abd1ebb0f9ebfe40951f5dd8a1dc920, type: 3}
+      propertyPath: attackRange
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10882,13 +10886,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: SkeletonLinie Variant 1 2 1 1 1 (2)
       objectReference: {fileID: 0}
-    - target: {fileID: 9046224770370553075, guid: ccf18760309a6664f889edef71c3ee30, type: 3}
-      propertyPath: m_AnchorMax.x
+    - target: {fileID: 8967192059332067762, guid: ccf18760309a6664f889edef71c3ee30, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9046224770370553075, guid: ccf18760309a6664f889edef71c3ee30, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9046224770370553075, guid: ccf18760309a6664f889edef71c3ee30, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -35733,13 +35741,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: SkeletonLinie Variant 1 2 1 1 1 (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 9046224770370553075, guid: ccf18760309a6664f889edef71c3ee30, type: 3}
-      propertyPath: m_AnchorMax.x
+    - target: {fileID: 8967192059332067762, guid: ccf18760309a6664f889edef71c3ee30, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9046224770370553075, guid: ccf18760309a6664f889edef71c3ee30, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9046224770370553075, guid: ccf18760309a6664f889edef71c3ee30, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

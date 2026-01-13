@@ -88,7 +88,7 @@ public class SuicideMinion : EnemyBase
                 // Ignore Spawner
                 if (enemy.GetType() == typeof(MinionSpawner)) continue;
 
-                enemy.TakeDamage(explosionDmg / 2);
+                enemy.TakeDamage(explosionDmg);
             }
         }
 

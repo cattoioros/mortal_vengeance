@@ -9,6 +9,7 @@ public class MinionSpawner : EnemyBase
     [SerializeField] private float spawnRate = 1.5f;
     [SerializeField] private GameObject minionPrefab;
     [SerializeField] private int initialPoolSize = 5;
+    [SerializeField] private int maxActiveMinions = 3;
 
 
     [Header("Audio")]
@@ -17,6 +18,7 @@ public class MinionSpawner : EnemyBase
 
     private float spawnTimer = 0f;
     private Queue<GameObject> minionPool = new Queue<GameObject>();
+    private int activeMinionsCount = 0;
     protected override void Start()
     {
         base.Start();
@@ -58,6 +60,8 @@ public class MinionSpawner : EnemyBase
             minionToSpawn.transform.rotation = Quaternion.identity;
             minionToSpawn.SetActive(true);
 
+            activeMinionsCount++;
+
             return minionToSpawn;
         }
 
@@ -66,13 +70,22 @@ public class MinionSpawner : EnemyBase
         //Deactivating the minion and putting it back in the pool
         minion.SetActive(false);
         minionPool.Enqueue(minion);
+
+        activeMinionsCount--;
     }
 
 
     public void spawnMinion()
     {
+
+        if (activeMinionsCount >= maxActiveMinions)
+        {
+            Debug.Log($"Limita atinsa ({activeMinionsCount}/{maxActiveMinions})");
+            return;
+        }
+
         // If there are no more minions in the pool, we create more
-            if (minionPool.Count > 0)
+        if (minionPool.Count > 0)
             {
                 GetMinion();
             }
