@@ -421,6 +421,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 6017230220818997599, guid: 8f7380da49034cd488ddff94b1ac35d1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -524,13 +528,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 839d719d1ad9cb34484d40bfdd3acdc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRanged
-  maxHealth: 1000
+  maxHealth: 100
   movementSpeed: 10
   chaseRange: 12
   attackRange: 8
   baseDmg: 15
   attackCooldown: 4
-  healthBar: {fileID: 4422281366586290483, guid: fd1e533da038f314fb33c0f4b275e38b, type: 3}
+  healthBar: {fileID: 0}
   arrowPrefab: {fileID: 1225370512109555040, guid: a63b329fdec7e4f4497b7b22d0913127, type: 3}
   speed: 37
   initialPoolSize: 2

@@ -88,7 +88,7 @@ public class EnemyRanged : EnemyBase
             initPool(1);
         }
 
-        Debug.Log("Luam sageata" + Time.time);
+        //Debug.Log("Luam sageata" + Time.time);
 
         //Arrow to be used out of the pool
         GameObject arrowToSpawn = arrowPool.Dequeue();
@@ -103,13 +103,13 @@ public class EnemyRanged : EnemyBase
 
     public void LoadArrow()
     {
-        Debug.Log("Incarcam sageata" + Time.time);
+        //Debug.Log("Incarcam sageata" + Time.time);
         arrowInHand.SetActive(true);
     }
 
     public void UnLoadArrow()
     {
-        Debug.Log("Descarcam sageata" + Time.time);
+        //Debug.Log("Descarcam sageata" + Time.time);
         arrowInHand.SetActive(false);
     }
 
@@ -182,7 +182,7 @@ public class EnemyRanged : EnemyBase
     {
         Debug.Log("Incepem operatiunea de tragere" + Time.time);
         GameObject readyArrow = GetArrow();
-        Vector3 PlayerDirection = playerTarget.transform.position - punctLoadSageata.position;
+        Vector3 PlayerDirection = playerTarget.transform.position - punctLoadSageata.position + new Vector3(0f,1.5f,0f);
         readyArrow.transform.rotation = Quaternion.LookRotation(PlayerDirection);
 
 
@@ -204,7 +204,7 @@ public class EnemyRanged : EnemyBase
 
     private IEnumerator ReleaseBow(float duration)
     {
-        Debug.Log("Release bow" + Time.time);
+        //Debug.Log("Release bow" + Time.time);
         float t = 0;
         Vector3 brat1Start = bratArc1.localEulerAngles;
         Vector3 brat2Start = bratArc2.localEulerAngles;
@@ -241,11 +241,6 @@ public class EnemyRanged : EnemyBase
             }
 
             lastAttackTime = Time.time;
-
-
-            
-
-
 
 
         }

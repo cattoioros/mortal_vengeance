@@ -9,6 +9,8 @@ TagManager:
   - Meteor
   - SkillTree
   - PickupText
+  - Undefined
+  - Enemy
   layers:
   - Default
   - TransparentFX

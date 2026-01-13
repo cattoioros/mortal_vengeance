@@ -241,10 +241,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: DevilGirlUnity Variant 1 1 1 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3816982790497214890, guid: 2098deda75bcb5a409bd931138ba2543, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 6482854954645846265, guid: 2098deda75bcb5a409bd931138ba2543, type: 3}
       propertyPath: healthBar
       value: 
-      objectReference: {fileID: 4422281366586290483, guid: fd1e533da038f314fb33c0f4b275e38b, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 6482854954645846265, guid: 2098deda75bcb5a409bd931138ba2543, type: 3}
       propertyPath: chaseRange
       value: 42
