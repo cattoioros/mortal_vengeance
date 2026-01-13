@@ -165,6 +165,12 @@ public class SkillTreeManager : MonoBehaviour
     {
         if (playerStats == null) return;
 
+        if (SkillData.instance == null)
+        {
+            Debug.LogWarning("SkillTreeManager: SkillData.instance is null; cannot apply skill bonuses.");
+            return;
+        }
+
         if (!hasBaseStats)
         {
             CacheBaseStats();
@@ -190,7 +196,10 @@ public class SkillTreeManager : MonoBehaviour
         foreach (string skillId in unlockedSkills)
         {
             Skill skill = SkillData.instance.GetSkill(skillId);
-            
+
+            // Skill ids can change when the catalog is updated; ignore unknown ids safely.
+            if (skill == null || skill.bonuses == null) continue;
+
             foreach (StatBonus bonus in skill.bonuses)
             {
                 ApplyBonus(bonus.statName, bonus.value);

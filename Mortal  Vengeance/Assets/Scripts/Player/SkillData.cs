@@ -27,6 +27,19 @@ public class SkillData : MonoBehaviour
     
     public List<Skill> allSkills = new List<Skill>();
 
+    // The intended skill catalog for this project.
+    // If the serialized/scene list differs (e.g., old int_/dex_ skills), we rebuild it on Awake.
+    private static readonly HashSet<string> DefaultSkillIds = new HashSet<string>
+    {
+        "hlt_maxhealth_1",
+        "hlt_maxhealth_2",
+        "hlt_regen_1",
+        "hlt_regen_2",
+        "str_damage_1",
+        "str_damage_2",
+        "str_damage_3",
+    };
+
     private void Awake()
     {
         // Singleton: skills are treated as a shared catalog.
@@ -37,76 +50,98 @@ public class SkillData : MonoBehaviour
         }
         
         instance = this;
-        
-        if (allSkills.Count == 0)
+
+        // Keep a default set so the UI can work in a fresh scene.
+        // Also auto-upgrade any legacy/serialized catalogs so the skill tree shows only the intended 7 skills.
+        if (allSkills.Count == 0 || NeedsDefaultCatalog(allSkills))
         {
-            // Keep a default set so the UI can work in a fresh scene.
             InitializeSkills();
         }
+    }
+
+    private static bool NeedsDefaultCatalog(List<Skill> skills)
+    {
+        if (skills == null) return true;
+
+        // If the list differs from the intended ids, treat it as legacy/custom and rebuild.
+        if (skills.Count != DefaultSkillIds.Count) return true;
+
+        foreach (var skill in skills)
+        {
+            if (skill == null) return true;
+            if (string.IsNullOrWhiteSpace(skill.skillId)) return true;
+            if (!DefaultSkillIds.Contains(skill.skillId)) return true;
+        }
+
+        return false;
     }
 
     private void InitializeSkills()
     {
         // This is a simple in-code catalog; later you can replace with ScriptableObjects.
-        // Strength
+        // Clear first so re-initialization doesn't stack duplicates.
+        allSkills.Clear();
+
+        // Health (hlt_*)
         allSkills.Add(new Skill
         {
-            skillId = "str_health_1",
-            skillName = "Healthy",
+            skillId = "hlt_maxhealth_1",
+            skillName = "Vitality I",
             description = "Increase max health by 20",
             bonuses = new List<StatBonus> { new StatBonus { statName = "maxHealth", value = 20 } }
         });
 
         allSkills.Add(new Skill
         {
-            skillId = "str_health_2",
-            skillName = "Toughness",
-            description = "Increase max health by 40",
-            bonuses = new List<StatBonus> { new StatBonus { statName = "maxHealth", value = 40 } },
-            prerequisiteSkillIds = new List<string> { "str_health_1" }
+            skillId = "hlt_maxhealth_2",
+            skillName = "Vitality II",
+            description = "Increase max health by 20",
+            bonuses = new List<StatBonus> { new StatBonus { statName = "maxHealth", value = 20 } },
+            prerequisiteSkillIds = new List<string> { "hlt_maxhealth_1" }
         });
 
+        allSkills.Add(new Skill
+        {
+            skillId = "hlt_regen_1",
+            skillName = "Regeneration I",
+            description = "Increase health regeneration by 0.5",
+            bonuses = new List<StatBonus> { new StatBonus { statName = "healthRegeneration", value = 0.5f } }
+        });
+
+        allSkills.Add(new Skill
+        {
+            skillId = "hlt_regen_2",
+            skillName = "Regeneration II",
+            description = "Increase health regeneration by 0.5",
+            bonuses = new List<StatBonus> { new StatBonus { statName = "healthRegeneration", value = 0.5f } },
+            prerequisiteSkillIds = new List<string> { "hlt_regen_1" }
+        });
+
+        // Strength (str_*)
         allSkills.Add(new Skill
         {
             skillId = "str_damage_1",
-            skillName = "Strong",
-            description = "Increase damage by 5",
+            skillName = "Power I",
+            description = "Increase attack damage by 5",
             bonuses = new List<StatBonus> { new StatBonus { statName = "attackPower", value = 5 } }
         });
 
-        // Intelligence
         allSkills.Add(new Skill
         {
-            skillId = "int_mana_1",
-            skillName = "Meditate",
-            description = "Increase max mana by 20",
-            bonuses = new List<StatBonus> { new StatBonus { statName = "maxMana", value = 20 } }
+            skillId = "str_damage_2",
+            skillName = "Power II",
+            description = "Increase attack damage by 5",
+            bonuses = new List<StatBonus> { new StatBonus { statName = "attackPower", value = 5 } },
+            prerequisiteSkillIds = new List<string> { "str_damage_1" }
         });
 
         allSkills.Add(new Skill
         {
-            skillId = "int_mana_regen_1",
-            skillName = "Mana Flow",
-            description = "Increase mana regen by 1",
-            bonuses = new List<StatBonus> { new StatBonus { statName = "manaRegeneration", value = 1 } }
-        });
-
-        // Dexterity
-        allSkills.Add(new Skill
-        {
-            skillId = "dex_crit_1",
-            skillName = "Precision",
-            description = "Increase crit chance by 5%",
-            bonuses = new List<StatBonus> { new StatBonus { statName = "critChance", value = 5 } }
-        });
-
-        allSkills.Add(new Skill
-        {
-            skillId = "dex_crit_2",
-            skillName = "Deadly",
-            description = "Increase crit damage by 20%",
-            bonuses = new List<StatBonus> { new StatBonus { statName = "critDamage", value = 20 } },
-            prerequisiteSkillIds = new List<string> { "dex_crit_1" }
+            skillId = "str_damage_3",
+            skillName = "Power III",
+            description = "Increase attack damage by 5",
+            bonuses = new List<StatBonus> { new StatBonus { statName = "attackPower", value = 5 } },
+            prerequisiteSkillIds = new List<string> { "str_damage_2" }
         });
     }
 
