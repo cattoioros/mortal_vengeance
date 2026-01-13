@@ -5,7 +5,6 @@ public class Arrow : MonoBehaviour
 {
     private EnemyRanged myArcher;
     private float launchTime;
-    private bool canHit = false; 
 
     public void setArcher(EnemyRanged archer)
     {
@@ -14,11 +13,7 @@ public class Arrow : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!canHit)
-        {
-            Debug.Log($"Ignorat coliziune early cu {other.name}");
-            return;
-        }
+       
 
         Debug.Log($"Lovit: {other.name}, Tag: {other.tag}");
 
@@ -46,15 +41,11 @@ public class Arrow : MonoBehaviour
     public void OnEnable()
     {
         launchTime = Time.time;
-        canHit = false; 
-        StartCoroutine(EnableHitAfterDelay(0.1f)); 
+        
+      
     }
 
-    private System.Collections.IEnumerator EnableHitAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        canHit = true;
-    }
+  
 
     public void Update()
     {
