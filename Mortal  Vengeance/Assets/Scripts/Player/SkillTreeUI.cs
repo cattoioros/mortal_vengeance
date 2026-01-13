@@ -14,6 +14,14 @@ public class SkillTreeUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI skillDescriptionText;
     [SerializeField] private Button unlockButton;
 
+    [Header("Layout")]
+    [Tooltip("Preferred height for each skill button (used by VerticalLayoutGroup if present).")]
+    [SerializeField] private float skillButtonPreferredHeight = 44f;
+    [Tooltip("Enable TMP auto-sizing so long names fit without clipping.")]
+    [SerializeField] private bool autoSizeSkillButtonText = true;
+    [SerializeField] private float skillButtonTextMaxSize = 20f;
+    [SerializeField] private float skillButtonTextMinSize = 12f;
+
     private readonly Dictionary<string, Button> buttonsBySkillId = new Dictionary<string, Button>();
     private Skill currentlySelectedSkill;
 
@@ -152,11 +160,27 @@ public class SkillTreeUI : MonoBehaviour
                 button.gameObject.name = $"SkillButton_{skill.skillId}";
                 button.gameObject.SetActive(true);
 
+                // Make sure the button has enough vertical space for the label.
+                // This plays nicely with a VerticalLayoutGroup on the container.
+                var layoutElement = button.GetComponent<LayoutElement>();
+                if (layoutElement == null) layoutElement = button.gameObject.AddComponent<LayoutElement>();
+                layoutElement.preferredHeight = Mathf.Max(24f, skillButtonPreferredHeight);
+
                 var label = button.GetComponentInChildren<TextMeshProUGUI>();
                 if (label != null)
                 {
                     label.text = skill.skillName;
                     label.raycastTarget = false;
+
+                    // Prevent clipping on longer names.
+                    label.enableWordWrapping = true;
+                    label.overflowMode = TextOverflowModes.Ellipsis;
+                    if (autoSizeSkillButtonText)
+                    {
+                        label.enableAutoSizing = true;
+                        label.fontSizeMax = Mathf.Max(skillButtonTextMinSize, skillButtonTextMaxSize);
+                        label.fontSizeMin = Mathf.Max(8f, Mathf.Min(skillButtonTextMinSize, label.fontSizeMax));
+                    }
                 }
 
                 string capturedId = skill.skillId;
@@ -173,17 +197,15 @@ public class SkillTreeUI : MonoBehaviour
         // Stable ordering keeps the UI predictable.
         var categoryOrder = new List<(string id, string display)>
         {
+            ("hlt", "Health"),
             ("str", "Strength"),
-            ("int", "Intelligence"),
-            ("dex", "Dexterity"),
             ("other", "Other")
         };
 
         var byCategory = new Dictionary<string, List<Skill>>
         {
+            ["hlt"] = new List<Skill>(),
             ["str"] = new List<Skill>(),
-            ["int"] = new List<Skill>(),
-            ["dex"] = new List<Skill>(),
             ["other"] = new List<Skill>()
         };
 
@@ -205,11 +227,10 @@ public class SkillTreeUI : MonoBehaviour
 
     private string GetCategoryId(string skillId)
     {
-        // Categories are inferred from skillId prefixes (e.g., "str_", "int_", "dex_").
+        // Categories are inferred from skillId prefixes (e.g., "hlt_", "str_").
         if (string.IsNullOrWhiteSpace(skillId)) return "other";
+        if (skillId.StartsWith("hlt_")) return "hlt";
         if (skillId.StartsWith("str_")) return "str";
-        if (skillId.StartsWith("int_")) return "int";
-        if (skillId.StartsWith("dex_")) return "dex";
         return "other";
     }
 
@@ -234,7 +255,7 @@ public class SkillTreeUI : MonoBehaviour
 
         // Make layout behave nicely under a VerticalLayoutGroup.
         var layout = headerObj.AddComponent<LayoutElement>();
-        layout.preferredHeight = 28;
+        layout.preferredHeight = 32;
     }
 
     private void OnSkillButtonClicked(string skillId)

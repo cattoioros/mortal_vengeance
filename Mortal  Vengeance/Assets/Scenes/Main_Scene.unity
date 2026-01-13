@@ -33100,7 +33100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3c012786e704f54290617b007f55fd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrantSkillPointsOnTeleportOnce
-  skillPointsToGrant: 5
+  skillPointsToGrant: 2
   grantKey: 4a0b78e2827c4b28bd54d01bf3f59bc6
   rememberAcrossSessions: 0
   showMessage: 1
