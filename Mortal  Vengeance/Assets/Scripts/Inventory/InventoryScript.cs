@@ -7,11 +7,22 @@ public class InventorySystem : MonoBehaviour
     public static InventorySystem Instance; //singleton instance
 
     private InventorySlot selectedSlot;
+    private InventorySlot equippedSlot;
+    private InventorySlot equippedSourceSlot;
+    private InventoryUIManager ui;
+    private WeaponManager weaponManager;
+    private ConsumableManager consumableManager;
+
+
 
     private void Awake()
     {
         Instance = this;
+        ui = FindObjectOfType<InventoryUIManager>();
+        weaponManager = FindObjectOfType<WeaponManager>();
+        consumableManager = FindObjectOfType<ConsumableManager>();
     }
+
 
     //called when a slot is clicked
     public void OnSlotClicked(InventorySlot clickedSlot)
@@ -48,46 +59,38 @@ public class InventorySystem : MonoBehaviour
 
         ItemData draggedItem = from.currentItem;
 
-        //equipment logic 
+        // EQUIP
         if (to.slotType == InventorySlot.SlotType.Equipment && to.index == 1)
         {
             if (draggedItem is WeaponItemData weapon)
             {
-                WeaponManager wm = FindObjectOfType<WeaponManager>();
-                if (wm != null)
-                    wm.EquipWeapon(weapon);
+                weaponManager?.EquipWeapon(weapon);
+                consumableManager?.Unequip();
             }
             else if (draggedItem is ConsumableItemData consumable)
             {
-                ConsumableManager cm = FindObjectOfType<ConsumableManager>();
-                if (cm != null)
-                    cm.EquipConsumable(consumable);
+                consumableManager?.EquipConsumable(consumable);
+                weaponManager?.Unequip();
+
+                equippedSlot = to;
+                equippedSourceSlot = from;
             }
         }
 
-
-        //unequip logic
+        // UNEQUIP
         if (from.slotType == InventorySlot.SlotType.Equipment && from.index == 1)
         {
-            WeaponManager wm = FindObjectOfType<WeaponManager>();
-            if (wm != null)
-                wm.Unequip();
-
-            ConsumableManager cm = FindObjectOfType<ConsumableManager>();
-            if (cm != null)
-                cm.Unequip();
+            weaponManager?.Unequip();
+            consumableManager?.Unequip();
         }
 
-
-
-        // item ui
+        // UI MOVE
         to.SetItem(draggedItem);
         from.Clear();
 
         InventoryDragHandler.Instance.StopDrag();
-
-        Debug.Log($"Moved item from slot {from.index} to slot {to.index}");
     }
+
 
 
     //swaps items between two slots
@@ -106,10 +109,15 @@ public class InventorySystem : MonoBehaviour
         if (hotbarSlot == null || hotbarSlot.currentItem == null)
             return;
 
-        
+        if (ui == null || ui.equipmentPanel == null)
+        {
+            Debug.LogError("InventoryUIManager or equipmentPanel missing!");
+            return;
+        }
+
         InventorySlot equipmentSlot = null;
 
-        foreach (Transform child in FindObjectOfType<InventoryUIManager>().equipmentPanel)
+        foreach (Transform child in ui.equipmentPanel)
         {
             InventorySlot slot = child.GetComponent<InventorySlot>();
             if (slot != null && slot.index == 1)
@@ -122,27 +130,79 @@ public class InventorySystem : MonoBehaviour
         if (equipmentSlot == null)
             return;
 
-        
-        if (!equipmentSlot.IsEmpty())
-        {
-            hotbarSlot.SetItem(equipmentSlot.currentItem);
-        }
+        // SAFE SWAP
+        ItemData previous = equipmentSlot.currentItem;
 
-        
         equipmentSlot.SetItem(hotbarSlot.currentItem);
         hotbarSlot.Clear();
 
-        
+        if (previous != null)
+        {
+            hotbarSlot.SetItem(previous);
+        }
+
+        equippedSlot = equipmentSlot;
+        equippedSourceSlot = hotbarSlot;
+
         if (equipmentSlot.currentItem is WeaponItemData weapon)
         {
-            FindObjectOfType<WeaponManager>()?.EquipWeapon(weapon);
-            FindObjectOfType<ConsumableManager>()?.Unequip();
+            weaponManager?.EquipWeapon(weapon);
+            consumableManager?.Unequip();
         }
         else if (equipmentSlot.currentItem is ConsumableItemData consumable)
         {
-            FindObjectOfType<ConsumableManager>()?.EquipConsumable(consumable);
-            FindObjectOfType<WeaponManager>()?.Unequip();
+            consumableManager?.EquipConsumable(consumable);
+            weaponManager?.Unequip();
         }
     }
+
+
+    public void ConsumeEquippedItem()
+    {
+        if (equippedSlot == null)
+            return;
+
+        equippedSlot.Clear();
+
+        if (equippedSourceSlot != null)
+            equippedSourceSlot.Clear();
+
+        equippedSlot = null;
+        equippedSourceSlot = null;
+    }
+
+
+
+    public void RemoveItemEverywhere(ItemData item)
+    {
+        InventoryUIManager ui = FindObjectOfType<InventoryUIManager>();
+        if (ui == null) return;
+
+        // Equipment
+        foreach (Transform child in ui.equipmentPanel)
+        {
+            InventorySlot slot = child.GetComponent<InventorySlot>();
+            if (slot != null && slot.currentItem == item)
+                slot.Clear();
+        }
+
+        // Hotbar
+        foreach (Transform child in ui.hotbarGrid)
+        {
+            InventorySlot slot = child.GetComponent<InventorySlot>();
+            if (slot != null && slot.currentItem == item)
+                slot.Clear();
+        }
+
+        // Inventory
+        foreach (Transform child in ui.inventoryGrid)
+        {
+            InventorySlot slot = child.GetComponent<InventorySlot>();
+            if (slot != null && slot.currentItem == item)
+                slot.Clear();
+        }
+    }
+
+
 
 }

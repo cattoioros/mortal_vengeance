@@ -4,49 +4,51 @@ public class ConsumableManager : MonoBehaviour
 {
     public Transform itemHolder;
 
+    private PotionInHand currentPotion;
     private GameObject currentItem;
+    private PlayerStatsManager statsManager;
+    private ItemData equippedConsumableData;
 
+
+    void Start()
+    {
+        statsManager = GetComponent<PlayerStatsManager>();
+    }
 
     public void EquipConsumable(ConsumableItemData data)
     {
-        if (currentItem != null)
-            Destroy(currentItem);
+        Unequip();
 
         currentItem = Instantiate(data.equippedPrefab, itemHolder);
         currentItem.transform.localPosition = Vector3.zero;
         currentItem.transform.localRotation = Quaternion.identity;
         currentItem.transform.localScale = Vector3.one;
 
-
-        PotionInHand potion = currentItem.GetComponent<PotionInHand>();
-        if (potion != null)
+        currentPotion = currentItem.GetComponent<PotionInHand>();
+        if (currentPotion != null)
         {
-            potion.healAmount = data.healAmount;
+            equippedConsumableData = data;
+            currentPotion.healAmount = data.healAmount;
         }
     }
-
 
     void Update()
     {
-        if (currentItem != null && Input.GetMouseButtonDown(0))
+        if (currentPotion != null && Input.GetKeyDown(KeyCode.Q))
         {
-            PotionInHand potion = currentItem.GetComponent<PotionInHand>();
-            if (potion != null)
-            {
-                potion.Use(gameObject);
-                currentItem = null;
-            }
+            currentPotion.Use(statsManager);
+            InventorySystem.Instance?.ConsumeEquippedItem();
+            Unequip();
         }
     }
+
 
     public void Unequip()
     {
         if (currentItem != null)
-        {
             Destroy(currentItem);
-            currentItem = null;
-        }
+
+        currentItem = null;
+        currentPotion = null;
     }
-
-
 }
