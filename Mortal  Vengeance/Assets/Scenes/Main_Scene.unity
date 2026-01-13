@@ -31698,6 +31698,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStatsManager
   stats: {fileID: 0}
+  animator: {fileID: 1831297571}
+  menu: {fileID: 1121485929}
   currentHealth: 0
   currentMana: 0
   currentXP: 0
