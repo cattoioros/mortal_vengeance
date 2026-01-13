@@ -532,8 +532,8 @@ MonoBehaviour:
   movementSpeed: 10
   chaseRange: 12
   attackRange: 8
-  baseDmg: 15
-  attackCooldown: 4
+  baseDmg: 10
+  attackCooldown: 6
   healthBar: {fileID: 0}
   arrowPrefab: {fileID: 1225370512109555040, guid: a63b329fdec7e4f4497b7b22d0913127, type: 3}
   speed: 37

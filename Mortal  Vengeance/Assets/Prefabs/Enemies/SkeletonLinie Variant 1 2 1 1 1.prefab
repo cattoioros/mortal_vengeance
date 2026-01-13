@@ -265,8 +265,8 @@ MonoBehaviour:
   movementSpeed: 10
   chaseRange: 14
   attackRange: 3
-  baseDmg: 20
-  attackCooldown: 4
+  baseDmg: 10
+  attackCooldown: 3.5
   healthBar: {fileID: 0}
   audioController: {fileID: 4738907498413836897}
 --- !u!82 &8157890832657411297

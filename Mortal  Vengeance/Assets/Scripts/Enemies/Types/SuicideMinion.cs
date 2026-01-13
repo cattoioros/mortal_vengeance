@@ -5,7 +5,7 @@ using UnityEngine.AI;
 public class SuicideMinion : EnemyBase
 {
     [SerializeField] private float explosionRadius = 3f;
-    [SerializeField] private int explosionDmg = 50;
+    [SerializeField] private int explosionDmg = 25;
     [SerializeField] private float explosionTriggerRadius = 1.5f;
     [SerializeField] private float explosionDelay = 1f;
     [SerializeField] private GameObject explosionPrefab;
