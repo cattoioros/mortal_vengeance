@@ -11,6 +11,13 @@ public class NPCHealth : MonoBehaviour, IsDamageable
     private Rigidbody rb;
     private Collider col;
 
+    [Header("Potion Drop")]
+    public GameObject[] potionPickupPrefabs;
+    public int minPotionDrop = 1;
+    public int maxPotionDrop = 2;
+
+
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -48,6 +55,34 @@ public class NPCHealth : MonoBehaviour, IsDamageable
 
         animator.SetTrigger("Die");
 
+        SpawnPotions();
+
         Destroy(gameObject, 2.5f);
     }
+
+
+    private void SpawnPotions()
+    {
+        // Determine random number of potions to drop
+        int dropCount = Random.Range(minPotionDrop, maxPotionDrop + 1);
+
+        for (int i = 0; i < dropCount; i++)
+        {
+            // Random offset around NPC position
+            Vector3 offset = Random.insideUnitSphere;
+            offset.y = 0.5f;
+
+            // Select random potion prefab
+            GameObject prefab = potionPickupPrefabs[Random.Range(0, potionPickupPrefabs.Length)];
+
+            // Instantiate potion pickup
+            Instantiate(
+                prefab,
+                transform.position + offset,
+                Quaternion.identity
+            );
+        }
+    }
+
+
 }

@@ -80,7 +80,7 @@ public class InventorySystem : MonoBehaviour
 
 
 
-        // ITEM UI 
+        // item ui
         to.SetItem(draggedItem);
         from.Clear();
 
