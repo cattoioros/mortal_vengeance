@@ -64,7 +64,7 @@ public class TeleportStatusUI : MonoBehaviour
 
         if (messageTMP == null && messageUGUI == null && messageTextMesh == null)
         {
-            // Last resort: scan for a matching text object name (case-insensitive).
+            // scan for a matching text object name (case-insensitive).
             var allTMP = Object.FindObjectsByType<TMP_Text>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
             for (int i = 0; i < allTMP.Length && messageTMP == null; i++)
             {
@@ -192,7 +192,11 @@ public class TeleportStatusUI : MonoBehaviour
         var canvas = canvasGO.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
-        canvasGO.AddComponent<CanvasScaler>();
+        var scaler = canvasGO.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920f, 1080f);
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 0.5f;
         canvasGO.AddComponent<GraphicRaycaster>();
 
         var textGO = new GameObject("TeleportStatusText");
@@ -200,17 +204,23 @@ public class TeleportStatusUI : MonoBehaviour
 
         // Prefer TMP if available.
         var tmp = textGO.AddComponent<TextMeshProUGUI>();
-        tmp.alignment = TextAlignmentOptions.MidlineRight;
+        tmp.alignment = TextAlignmentOptions.TopRight;
         tmp.color = Color.white;
         tmp.fontSize = 28;
+        tmp.enableWordWrapping = true;
+        tmp.overflowMode = TextOverflowModes.Truncate;
+        tmp.enableAutoSizing = true;
+        tmp.fontSizeMin = 14;
+        tmp.fontSizeMax = 28;
         tmp.raycastTarget = false;
 
         var rt = tmp.rectTransform;
-        rt.anchorMin = new Vector2(1f, 0.85f);
-        rt.anchorMax = new Vector2(1f, 0.85f);
+        // Stretch near the top-right so it scales with resolution.
+        rt.anchorMin = new Vector2(0.55f, 0.86f);
+        rt.anchorMax = new Vector2(0.98f, 0.97f);
         rt.pivot = new Vector2(1f, 0.5f);
-        rt.anchoredPosition = new Vector2(-24f, 0f);
-        rt.sizeDelta = new Vector2(700f, 80f);
+        rt.offsetMin = new Vector2(0f, 0f);
+        rt.offsetMax = new Vector2(0f, 0f);
 
         messageTMP = tmp;
     }
@@ -245,35 +255,46 @@ public class TeleportStatusUI : MonoBehaviour
 
         if (messageTMP != null)
         {
-            messageTMP.alignment = TextAlignmentOptions.MidlineRight;
+            messageTMP.alignment = TextAlignmentOptions.TopRight;
+
+            // Make long prompts safe on small screens.
+            if (messageTMP is TextMeshProUGUI tmpText)
+            {
+                tmpText.enableWordWrapping = true;
+                tmpText.overflowMode = TextOverflowModes.Truncate;
+                tmpText.enableAutoSizing = true;
+                tmpText.fontSizeMin = 14;
+                tmpText.fontSizeMax = Mathf.Max(tmpText.fontSizeMax, 28);
+            }
 
             if (messageTMP is TextMeshProUGUI tmpUGUI)
             {
                 var rt = tmpUGUI.rectTransform;
-                rt.anchorMin = new Vector2(1f, 0.85f);
-                rt.anchorMax = new Vector2(1f, 0.85f);
+                rt.anchorMin = new Vector2(0.55f, 0.86f);
+                rt.anchorMax = new Vector2(0.98f, 0.97f);
                 rt.pivot = new Vector2(1f, 0.5f);
-                rt.anchoredPosition = new Vector2(-24f, 0f);
-
-                if (rt.sizeDelta.x <= 0.01f || rt.sizeDelta.y <= 0.01f)
-                    rt.sizeDelta = new Vector2(700f, 80f);
+                rt.offsetMin = new Vector2(0f, 0f);
+                rt.offsetMax = new Vector2(0f, 0f);
             }
         }
 
         if (messageUGUI != null)
         {
-            messageUGUI.alignment = TextAnchor.MiddleRight;
+            messageUGUI.alignment = TextAnchor.UpperRight;
+            messageUGUI.horizontalOverflow = HorizontalWrapMode.Wrap;
+            messageUGUI.verticalOverflow = VerticalWrapMode.Truncate;
+            messageUGUI.resizeTextForBestFit = true;
+            messageUGUI.resizeTextMinSize = 14;
+            messageUGUI.resizeTextMaxSize = 28;
 
             var rt = messageUGUI.GetComponent<RectTransform>();
             if (rt != null)
             {
-                rt.anchorMin = new Vector2(1f, 0.85f);
-                rt.anchorMax = new Vector2(1f, 0.85f);
+                rt.anchorMin = new Vector2(0.55f, 0.86f);
+                rt.anchorMax = new Vector2(0.98f, 0.97f);
                 rt.pivot = new Vector2(1f, 0.5f);
-                rt.anchoredPosition = new Vector2(-24f, 0f);
-
-                if (rt.sizeDelta.x <= 0.01f || rt.sizeDelta.y <= 0.01f)
-                    rt.sizeDelta = new Vector2(700f, 80f);
+                rt.offsetMin = new Vector2(0f, 0f);
+                rt.offsetMax = new Vector2(0f, 0f);
             }
         }
     }

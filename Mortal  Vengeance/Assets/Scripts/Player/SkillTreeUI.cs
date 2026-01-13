@@ -20,22 +20,32 @@ public class SkillTreeUI : MonoBehaviour
     private SkillTreeManager skillTreeManager;
     private SkillData skillData;
 
+    private bool isInitialized;
+
     private void Awake()
     {
+        // Grab singletons early; we still re-check in Start for safety.
         skillTreeManager = SkillTreeManager.instance;
         skillData = SkillData.instance;
     }
 
     private void OnEnable()
     {
-        // When the UI is opened (SetActive(true)), refresh immediately.
+        // OnEnable can run before Start (first activation), so avoid Refresh until initialized.
         if (skillTreeManager == null) skillTreeManager = SkillTreeManager.instance;
-        Refresh();
+        if (skillData == null) skillData = SkillData.instance;
+
+        Subscribe();
+
+        if (isInitialized)
+        {
+            Refresh();
+        }
     }
 
     private void OnDisable()
     {
-        // Ensure we don't keep stale subscriptions if the UI object is disabled/enabled.
+        // Avoid stale subscriptions when the UI is toggled on/off.
         Unsubscribe();
     }
 
@@ -67,11 +77,12 @@ public class SkillTreeUI : MonoBehaviour
             return;
         }
 
-        // Prevent UI text from blocking clicks on buttons behind it.
+        // Prevent TMP labels from blocking clicks.
         if (skillPointsText != null) skillPointsText.raycastTarget = false;
         if (skillNameText != null) skillNameText.raycastTarget = false;
         if (skillDescriptionText != null) skillDescriptionText.raycastTarget = false;
 
+        // Build the list once; later Refresh just updates colors/text.
         BuildButtons();
         SelectSkill(null);
         
@@ -80,6 +91,7 @@ public class SkillTreeUI : MonoBehaviour
             unlockButton.onClick.AddListener(OnUnlockButtonClicked);
         }
         
+        isInitialized = true;
         Refresh();
     }
 
@@ -101,19 +113,19 @@ public class SkillTreeUI : MonoBehaviour
 
     private void OnSkillTreeChanged(int _)
     {
-        Refresh();
+        if (isInitialized) Refresh();
     }
 
     private void OnSkillTreeChanged()
     {
-        Refresh();
+        if (isInitialized) Refresh();
     }
 
     private void BuildButtons()
     {
         buttonsBySkillId.Clear();
 
-        // Clear existing children (except prefab if user kept it inside container)
+        // Clear existing children (keep prefab if it's stored under the container).
         var toDestroy = new List<GameObject>();
         for (int i = 0; i < skillButtonContainer.childCount; i++)
         {
@@ -158,7 +170,7 @@ public class SkillTreeUI : MonoBehaviour
 
     private IEnumerable<(string categoryId, string categoryDisplayName, List<Skill> skills)> GroupSkills(List<Skill> skills)
     {
-        // Keep a predictable order.
+        // Stable ordering keeps the UI predictable.
         var categoryOrder = new List<(string id, string display)>
         {
             ("str", "Strength"),
@@ -185,7 +197,7 @@ public class SkillTreeUI : MonoBehaviour
         {
             var list = byCategory[id];
             if (list.Count == 0) continue;
-            // Stable ordering within a category: keeps it scalable and predictable.
+            // Stable ordering within a category.
             list.Sort((a, b) => string.CompareOrdinal(a.skillId, b.skillId));
             yield return (id, display, list);
         }
@@ -193,6 +205,7 @@ public class SkillTreeUI : MonoBehaviour
 
     private string GetCategoryId(string skillId)
     {
+        // Categories are inferred from skillId prefixes (e.g., "str_", "int_", "dex_").
         if (string.IsNullOrWhiteSpace(skillId)) return "other";
         if (skillId.StartsWith("str_")) return "str";
         if (skillId.StartsWith("int_")) return "int";
@@ -219,7 +232,7 @@ public class SkillTreeUI : MonoBehaviour
         headerText.fontSize = 22;
         headerText.alignment = TextAlignmentOptions.Left;
 
-        // Make layout behave nicely under VerticalLayoutGroup.
+        // Make layout behave nicely under a VerticalLayoutGroup.
         var layout = headerObj.AddComponent<LayoutElement>();
         layout.preferredHeight = 28;
     }
@@ -315,6 +328,9 @@ public class SkillTreeUI : MonoBehaviour
 
     private void Refresh()
     {
+        if (skillTreeManager == null || skillData == null)
+            return;
+
         if (skillPointsText != null)
         {
             skillPointsText.text = $"Skill Points: {skillTreeManager.GetAvailablePoints()}";
@@ -331,7 +347,7 @@ public class SkillTreeUI : MonoBehaviour
             bool unlocked = skillTreeManager.IsSkillUnlocked(skillId);
             bool canUnlock = !unlocked && PrereqsMet(skill) && skillTreeManager.GetAvailablePoints() >= skill.skillPointCost;
 
-            // Interactable: allow click always so info shows; but visually indicate state.
+            // Always clickable so the player can read details; color indicates state.
             button.interactable = true;
 
             var image = button.GetComponent<Image>();

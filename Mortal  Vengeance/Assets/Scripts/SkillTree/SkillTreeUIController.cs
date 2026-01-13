@@ -7,17 +7,17 @@ public class SkillTreeUIController : MonoBehaviour
     public static SkillTreeUIController Instance { get; private set; }
 
     [Header("UI")]
-    [Tooltip("The root GameObject of the skill tree UI to show/hide. If null, uses this GameObject.")]
+    [Tooltip("Root GameObject to show/hide. If null, uses this GameObject.")]
     [SerializeField] private GameObject skillTreeRoot;
 
-    [Tooltip("Optional Back button in the skill tree UI. If assigned, it will close the skill tree.")]
+    [Tooltip("Optional Back button that calls Close().")]
     [SerializeField] private Button backButton;
 
     [Header("Input")]
-    [Tooltip("Primary close key while the skill tree is open.")]
+    [Tooltip("Close key while open.")]
     [SerializeField] private Key closeKey = Key.Escape;
 
-    [Tooltip("Also allow closing with the same interact key used to open the skill tree.")]
+    [Tooltip("Also allow closing with the interact key.")]
     [SerializeField] private Key interactCloseKey = Key.E;
 
     [Header("Behavior")]
@@ -28,6 +28,7 @@ public class SkillTreeUIController : MonoBehaviour
 
     private void Awake()
     {
+        // Singleton so world triggers can open/close one shared skill UI.
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -40,7 +41,7 @@ public class SkillTreeUIController : MonoBehaviour
 
         if (backButton == null)
         {
-            // Optional convenience: auto-find a Button named "Back" or "BackButton".
+            // Convenience: auto-find a Button named "Back" or "BackButton".
             var buttons = GetComponentsInChildren<Button>(true);
             for (int i = 0; i < buttons.Length; i++)
             {
@@ -104,6 +105,7 @@ public class SkillTreeUIController : MonoBehaviour
 
         if (open)
         {
+            // When the tree is open we pause gameplay + show cursor for UI interaction.
             if (pauseGameWhileOpen) Time.timeScale = 0f;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -111,6 +113,7 @@ public class SkillTreeUIController : MonoBehaviour
         }
         else
         {
+            // Restore gameplay state + cursor state.
             if (pauseGameWhileOpen) Time.timeScale = 1f;
             Cursor.visible = false;
             Cursor.lockState = lockCursorWhenClosed ? CursorLockMode.Locked : CursorLockMode.None;

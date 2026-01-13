@@ -8,7 +8,7 @@ public class GrantSkillPointsOnTeleportOnce : MonoBehaviour
     [Header("Grant")]
     [SerializeField] private int skillPointsToGrant = 5;
 
-    [Tooltip("Unique id used to ensure this grant happens only once per play session (even if the object is recreated). Leave empty to use instance-only tracking.")]
+    [Tooltip("Optional unique id. If set, grant happens once per session (and optionally across restarts).")]
     [SerializeField] private string grantKey;
 
     [Header("Optional")]
@@ -45,6 +45,7 @@ public class GrantSkillPointsOnTeleportOnce : MonoBehaviour
 
         if (teleportTrigger != null)
         {
+            // Hook teleport completion so the grant happens only when the player actually arrives.
             teleportTrigger.Teleported += OnTeleported;
         }
     }
@@ -61,7 +62,9 @@ public class GrantSkillPointsOnTeleportOnce : MonoBehaviour
     {
         if (skillPointsToGrant <= 0) return;
 
-        // Instance-only safety (covers cases where grantKey is empty).
+        // player is provided for context/future use; the grant is global via SkillTreeManager.
+
+        // If no key, only grant once per component instance.
         if (string.IsNullOrWhiteSpace(grantKey))
         {
             if (grantedForThisInstance) return;
@@ -69,11 +72,12 @@ public class GrantSkillPointsOnTeleportOnce : MonoBehaviour
         }
         else
         {
-            // Session-wide safety (covers scene reloads / re-instantiation).
+            // With a key, also guard against scene reloads / re-instantiation.
             if (GrantedThisSession.Contains(grantKey)) return;
 
             if (rememberAcrossSessions)
             {
+                // PlayerPrefs makes this "one-time" even across restarts (optional).
                 string prefsKey = $"SkillPointGrantOnce::{grantKey}";
                 if (PlayerPrefs.GetInt(prefsKey, 0) == 1) return;
                 PlayerPrefs.SetInt(prefsKey, 1);

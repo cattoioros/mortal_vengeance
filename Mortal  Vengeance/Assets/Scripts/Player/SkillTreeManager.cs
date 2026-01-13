@@ -6,9 +6,13 @@ public class SkillTreeManager : MonoBehaviour
 {
     public static SkillTreeManager instance { get; private set; }
 
-    [SerializeField] private int availableSkillPoints = 0; // to be modified(base value for testing)
+    // Spendable points for unlocking skills.
+    [SerializeField] private int availableSkillPoints = 0;
+
+    // Tracks unlocked skill ids for quick checks.
     private HashSet<string> unlockedSkills = new HashSet<string>();
 
+    // UI subscribes to these to refresh immediately when points/skills change.
     public event Action<int> SkillPointsChanged;
     public event Action SkillsChanged;
 
@@ -77,6 +81,7 @@ public class SkillTreeManager : MonoBehaviour
 
     private void CacheBaseStats()
     {
+        // Snapshot the "no skills applied" state so ApplySkillBonuses can fully recompute.
         baseStats = new PlayerStatsSnapshot
         {
             maxHealth = playerStats.maxHealth,
@@ -107,21 +112,21 @@ public class SkillTreeManager : MonoBehaviour
             return false;
         }
 
-        // already unlocked check
+        // Already unlocked.
         if (unlockedSkills.Contains(skillId))
         {
             Debug.Log("Skill already unlocked: " + skillId);
             return false;
         }
 
-        // skill points check
+        // Points.
         if (availableSkillPoints < skill.skillPointCost)
         {
             Debug.Log("Not enough skill points");
             return false;
         }
 
-        // prerequisites check
+        // Prereqs.
         foreach (string prereqId in skill.prerequisiteSkillIds)
         {
             if (!unlockedSkills.Contains(prereqId))
@@ -131,7 +136,7 @@ public class SkillTreeManager : MonoBehaviour
             }
         }
 
-        // skill unlock
+        // Unlock + apply.
         unlockedSkills.Add(skillId);
         SpendSkillPoints(skill.skillPointCost);
         ApplySkillBonuses();
@@ -168,7 +173,8 @@ public class SkillTreeManager : MonoBehaviour
         float oldMaxHealth = playerStats.maxHealth;
         float oldMaxMana = playerStats.maxMana;
 
-        // Reset to base stats then re-apply all unlocked bonuses.
+        // Full recompute avoids stacking bugs when skills are unlocked in any order.
+        // Reset to base, then re-apply all unlocked bonuses.
         playerStats.maxHealth = baseStats.maxHealth;
         playerStats.healthRegeneration = baseStats.healthRegeneration;
         playerStats.maxMana = baseStats.maxMana;
@@ -213,7 +219,8 @@ public class SkillTreeManager : MonoBehaviour
 
     private void ApplyBonus(string statName, float value)
     {
-        switch (statName) // some of the skills need some further implementation(ex: mana, crit)
+        // Map SkillData.statName strings onto PlayerStats fields.
+        switch (statName)
         {
             case "maxHealth":
                 playerStats.maxHealth += value;
@@ -244,5 +251,6 @@ public class SkillTreeManager : MonoBehaviour
 
     public bool IsSkillUnlocked(string skillId) => unlockedSkills.Contains(skillId);
     public int GetAvailablePoints() => availableSkillPoints;
+    // Note: returns the live set (not a copy). Treat as read-only from callers.
     public HashSet<string> GetUnlockedSkills() => unlockedSkills;
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 public class DefaultPlayerSpawner : MonoBehaviour
 {
     [Header("Spawn")]
-    [Tooltip("Where the player should appear when the scene starts. If not set, this script will try to auto-find a PlayerSpawnPoint marked as Default, or an object named 'DefaultSpawnPoint'.")]
+    [Tooltip("Spawn used on scene start. If null: first PlayerSpawnPoint(IsDefault) or GameObject named 'DefaultSpawnPoint'.")]
     [SerializeField] private Transform defaultSpawnPoint;
 
     [Tooltip("If true, also set the player's rotation to match the spawn point.")]
@@ -22,7 +22,7 @@ public class DefaultPlayerSpawner : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool verboseLogging = false;
 
-    [Tooltip("How long (seconds) to wait for the Player/GameManager to be available before giving up.")]
+    [Tooltip("Seconds to wait for Player/GameManager before giving up.")]
     [SerializeField] private float findPlayerTimeoutSeconds = 2f;
 
     private bool didSpawn;
@@ -57,6 +57,7 @@ public class DefaultPlayerSpawner : MonoBehaviour
         float endTime = Time.realtimeSinceStartup + Mathf.Max(0.01f, findPlayerTimeoutSeconds);
         Transform player = null;
 
+        // Some scenes spawn the Player after a short delay, so we wait briefly.
         while (player == null && Time.realtimeSinceStartup < endTime)
         {
             player = TryFindPlayer();
@@ -107,7 +108,7 @@ public class DefaultPlayerSpawner : MonoBehaviour
 
     private Transform TryAutoFindDefaultSpawnPoint()
     {
-        // Prefer explicit marker component if present.
+        // Prefer explicit marker component.
         var spawnPoints = Object.FindObjectsByType<PlayerSpawnPoint>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         for (int i = 0; i < spawnPoints.Length; i++)
         {
@@ -124,6 +125,7 @@ public class DefaultPlayerSpawner : MonoBehaviour
     {
         if (player == null || target == null) return;
 
+        // Disable CharacterController to avoid collision push-back during teleport.
         var cc = player.GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
 

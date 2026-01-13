@@ -8,7 +8,7 @@ public class SkillTreeInteractTrigger : MonoBehaviour
     [SerializeField] private Key interactKey = Key.E;
     [SerializeField] private string playerTag = "Player";
 
-    [Tooltip("Optional: if set, uses this controller; otherwise uses SkillTreeUIController.Instance.")]
+    [Tooltip("Optional override; otherwise uses SkillTreeUIController.Instance.")]
     [SerializeField] private SkillTreeUIController controller;
 
     private Transform currentPlayer;
@@ -29,6 +29,7 @@ public class SkillTreeInteractTrigger : MonoBehaviour
         if (!other.CompareTag(playerTag)) return;
         currentPlayer = other.transform;
 
+        // Reuse the same prompt UI used by teleporters for consistency.
         TeleportStatusUI.ShowPersistent($"Press '{interactKey}' to open Skill Tree", 0f);
     }
 
@@ -44,6 +45,7 @@ public class SkillTreeInteractTrigger : MonoBehaviour
     private void Update()
     {
         if (currentPlayer == null) return;
+        // Prevent opening the skill tree while another UI is already consuming input.
         if (SystemMenuController.IsUIBlockingInput) return;
 
         if (Keyboard.current != null && Keyboard.current[interactKey].wasPressedThisFrame)
@@ -56,7 +58,8 @@ public class SkillTreeInteractTrigger : MonoBehaviour
             }
 
             TeleportStatusUI.Hide();
-            currentPlayer = null; // prevent re-trigger if teleport/disable skips OnTriggerExit
+            // Defensive: disable/teleport can skip OnTriggerExit.
+            currentPlayer = null;
             controller.Open();
         }
     }

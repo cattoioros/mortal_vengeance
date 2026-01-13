@@ -40,6 +40,7 @@ public class PlayerRecall : MonoBehaviour
     {
         if (cachedDefaultSpawn == null)
         {
+            // Spawn point can appear later (scene load) so we re-try if missing.
             cachedDefaultSpawn = FindDefaultSpawnPoint();
         }
 
@@ -49,7 +50,7 @@ public class PlayerRecall : MonoBehaviour
             return;
         }
 
-        // Clear any lingering teleport prompt UI.
+        // Clear any lingering prompt UI.
         TeleportStatusUI.Hide();
 
         if (showMessage)
@@ -57,6 +58,7 @@ public class PlayerRecall : MonoBehaviour
             TeleportStatusUI.Show($"Recalling to: {cachedDefaultSpawn.name}", messageSeconds);
         }
 
+        // Disable CharacterController to avoid collision issues during teleport.
         if (characterController != null) characterController.enabled = false;
 
         if (applyRotation)
@@ -73,6 +75,7 @@ public class PlayerRecall : MonoBehaviour
 
     private static Transform FindDefaultSpawnPoint()
     {
+        // Prefer explicit PlayerSpawnPoint markers; fallback to a known name.
         var spawnPoints = Object.FindObjectsByType<PlayerSpawnPoint>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         for (int i = 0; i < spawnPoints.Length; i++)
         {

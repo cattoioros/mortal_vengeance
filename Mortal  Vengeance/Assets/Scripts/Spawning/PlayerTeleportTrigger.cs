@@ -24,6 +24,7 @@ public class PlayerTeleportTrigger : MonoBehaviour
     [Tooltip("Invoked after the player is teleported.")]
     public UnityEvent onTeleported;
 
+    // C# event used by code (e.g., one-time rewards) without wiring UnityEvents.
     public event Action<Transform> Teleported;
 
     private Transform currentPlayer;
@@ -40,7 +41,7 @@ public class PlayerTeleportTrigger : MonoBehaviour
 
         currentPlayer = other.transform;
 
-        // Show message on enter (persistent until exit).
+        // Show a persistent prompt while inside the trigger.
         TeleportStatusUI.ShowPersistent($"{gameObject.name} \n Press '{interactKey}' to Teleport", 0f);
 
         if (teleportOnEnter)
@@ -86,10 +87,10 @@ public class PlayerTeleportTrigger : MonoBehaviour
 
         TeleportStatusUI.Hide();
 
-        // Teleporting often skips OnTriggerExit, so clear trigger state to avoid
-        // the Interact key triggering teleports again elsewhere.
+        // Teleporting can skip OnTriggerExit; clear state to avoid re-triggering elsewhere.
         currentPlayer = null;
 
+        // Disable CharacterController to avoid collision push-back during teleport.
         var cc = player.GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
 

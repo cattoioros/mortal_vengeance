@@ -11,12 +11,14 @@ public class StatBonus
 [System.Serializable]
 public class Skill
 {
-    public string skillId; // unique id
+    // Stable key used for unlocks/prereqs and UI mapping.
+    public string skillId;
     public string skillName;
     public string description;
     public List<StatBonus> bonuses = new List<StatBonus>();
     public int skillPointCost = 1;
-    public List<string> prerequisiteSkillIds = new List<string>(); // skills that must be unlocked first
+    // Skills that must be unlocked before this one.
+    public List<string> prerequisiteSkillIds = new List<string>();
 }
 
 public class SkillData : MonoBehaviour
@@ -27,6 +29,7 @@ public class SkillData : MonoBehaviour
 
     private void Awake()
     {
+        // Singleton: skills are treated as a shared catalog.
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
@@ -37,13 +40,15 @@ public class SkillData : MonoBehaviour
         
         if (allSkills.Count == 0)
         {
+            // Keep a default set so the UI can work in a fresh scene.
             InitializeSkills();
         }
     }
 
     private void InitializeSkills()
     {
-        // strength 
+        // This is a simple in-code catalog; later you can replace with ScriptableObjects.
+        // Strength
         allSkills.Add(new Skill
         {
             skillId = "str_health_1",
@@ -69,7 +74,7 @@ public class SkillData : MonoBehaviour
             bonuses = new List<StatBonus> { new StatBonus { statName = "attackPower", value = 5 } }
         });
 
-        // intelligence 
+        // Intelligence
         allSkills.Add(new Skill
         {
             skillId = "int_mana_1",
@@ -86,7 +91,7 @@ public class SkillData : MonoBehaviour
             bonuses = new List<StatBonus> { new StatBonus { statName = "manaRegeneration", value = 1 } }
         });
 
-        // dexterity
+        // Dexterity
         allSkills.Add(new Skill
         {
             skillId = "dex_crit_1",
@@ -107,6 +112,7 @@ public class SkillData : MonoBehaviour
 
     public Skill GetSkill(string skillId)
     {
+        // Linear lookup is fine for small lists; switch to a dictionary if this grows a lot.
         return allSkills.Find(s => s.skillId == skillId);
     }
 }
