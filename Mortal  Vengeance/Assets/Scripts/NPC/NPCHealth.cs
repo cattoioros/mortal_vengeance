@@ -1,15 +1,14 @@
 using UnityEngine;
 using Interfaces;
+using System.Collections;
 
+// system for NPC health and damage handling
 public class NPCHealth : MonoBehaviour, IsDamageable
 {
     public float maxHealth = 100f;
     private float currentHealth;
     private bool isDead = false;
 
-    private Animator animator;
-    private Rigidbody rb;
-    private Collider col;
 
     [Header("Potion Drop")]
     public GameObject[] potionPickupPrefabs;
@@ -21,9 +20,6 @@ public class NPCHealth : MonoBehaviour, IsDamageable
     void Start()
     {
         currentHealth = maxHealth;
-        animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
-        col = GetComponent<Collider>();
     }
 
     
@@ -44,20 +40,21 @@ public class NPCHealth : MonoBehaviour, IsDamageable
     {
         isDead = true;
 
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.isKinematic = true;
-        }
+        NPCMovement movement = GetComponent<NPCMovement>();
+        if (movement != null)
+            movement.enabled = false;
 
-        if (col != null)
-            col.enabled = false;
+        StartCoroutine(DeathRoutine());
+    }
 
-        animator.SetTrigger("Die");
+    private IEnumerator DeathRoutine()
+    {
+        // Wait for a moment before spawning potions
+        yield return new WaitForSeconds(1f);
 
         SpawnPotions();
 
-        Destroy(gameObject, 2.5f);
+        Destroy(gameObject);
     }
 
 
