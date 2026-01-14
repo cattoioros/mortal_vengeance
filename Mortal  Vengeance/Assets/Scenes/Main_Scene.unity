@@ -2035,6 +2035,8 @@ MonoBehaviour:
     Heavy
     Attack - Right Click
 
+    Inventory Hotbar - 1 - 9
+
     Save - F5'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -21976,7 +21978,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 104aff2a688094c6593e4f6cc5ebbb7e, type: 3}
+  m_Resource: {fileID: 8300000, guid: eb308fac66c96644bbcc2bdcec03feb7, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
