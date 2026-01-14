@@ -63,7 +63,7 @@ public class SkillData : MonoBehaviour
     {
         if (skills == null) return true;
 
-        // If the list differs from the intended ids, treat it as legacy/custom and rebuild.
+        // If the list differs from the intended ids, rebuild.
         if (skills.Count != DefaultSkillIds.Count) return true;
 
         foreach (var skill in skills)
@@ -78,7 +78,7 @@ public class SkillData : MonoBehaviour
 
     private void InitializeSkills()
     {
-        // This is a simple in-code catalog; later you can replace with ScriptableObjects.
+        // Simple skill catalog.
         // Clear first so re-initialization doesn't stack duplicates.
         allSkills.Clear();
 
@@ -147,7 +147,6 @@ public class SkillData : MonoBehaviour
 
     public Skill GetSkill(string skillId)
     {
-        // Linear lookup is fine for small lists; switch to a dictionary if this grows a lot.
         return allSkills.Find(s => s.skillId == skillId);
     }
 }

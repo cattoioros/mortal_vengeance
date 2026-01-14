@@ -113,7 +113,6 @@ public class TeleportStatusUI : MonoBehaviour
     {
         if (Instance == null)
         {
-            // If no UI exists in the scene, do nothing (keeps this optional).
             return;
         }
 
@@ -157,7 +156,6 @@ public class TeleportStatusUI : MonoBehaviour
         SetMessageText(message);
         SetVisible(true);
 
-        // duration <= 0 means persistent.
         if (duration > 0f)
         {
             activeRoutine = StartCoroutine(HideAfter(duration));
@@ -251,8 +249,6 @@ public class TeleportStatusUI : MonoBehaviour
 
     private void EnsureRightSideLayout()
     {
-        // For on-screen UI, we can only position things that have a RectTransform.
-
         if (messageTMP != null)
         {
             messageTMP.alignment = TextAlignmentOptions.TopRight;

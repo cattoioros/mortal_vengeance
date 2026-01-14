@@ -24,7 +24,6 @@ public class PlayerTeleportTrigger : MonoBehaviour
     [Tooltip("Invoked after the player is teleported.")]
     public UnityEvent onTeleported;
 
-    // C# event used by code (e.g., one-time rewards) without wiring UnityEvents.
     public event Action<Transform> Teleported;
 
     private Transform currentPlayer;

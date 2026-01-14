@@ -57,7 +57,6 @@ public class DefaultPlayerSpawner : MonoBehaviour
         float endTime = Time.realtimeSinceStartup + Mathf.Max(0.01f, findPlayerTimeoutSeconds);
         Transform player = null;
 
-        // Some scenes spawn the Player after a short delay, so we wait briefly.
         while (player == null && Time.realtimeSinceStartup < endTime)
         {
             player = TryFindPlayer();

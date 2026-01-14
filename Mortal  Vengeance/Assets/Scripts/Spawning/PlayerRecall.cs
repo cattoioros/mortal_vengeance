@@ -50,7 +50,7 @@ public class PlayerRecall : MonoBehaviour
             return;
         }
 
-        // Clear any lingering prompt UI.
+        // Clear lingering prompt UI.
         TeleportStatusUI.Hide();
 
         if (showMessage)

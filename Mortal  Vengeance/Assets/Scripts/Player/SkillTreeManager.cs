@@ -260,6 +260,5 @@ public class SkillTreeManager : MonoBehaviour
 
     public bool IsSkillUnlocked(string skillId) => unlockedSkills.Contains(skillId);
     public int GetAvailablePoints() => availableSkillPoints;
-    // Note: returns the live set (not a copy). Treat as read-only from callers.
     public HashSet<string> GetUnlockedSkills() => unlockedSkills;
 }

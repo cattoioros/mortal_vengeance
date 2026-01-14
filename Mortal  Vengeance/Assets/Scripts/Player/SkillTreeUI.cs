@@ -90,7 +90,7 @@ public class SkillTreeUI : MonoBehaviour
         if (skillNameText != null) skillNameText.raycastTarget = false;
         if (skillDescriptionText != null) skillDescriptionText.raycastTarget = false;
 
-        // Build the list once; later Refresh just updates colors/text.
+        // Build the list once; later Refresh just updates text.
         BuildButtons();
         SelectSkill(null);
         
@@ -161,7 +161,6 @@ public class SkillTreeUI : MonoBehaviour
                 button.gameObject.SetActive(true);
 
                 // Make sure the button has enough vertical space for the label.
-                // This plays nicely with a VerticalLayoutGroup on the container.
                 var layoutElement = button.GetComponent<LayoutElement>();
                 if (layoutElement == null) layoutElement = button.gameObject.AddComponent<LayoutElement>();
                 layoutElement.preferredHeight = Mathf.Max(24f, skillButtonPreferredHeight);
@@ -194,7 +193,7 @@ public class SkillTreeUI : MonoBehaviour
 
     private IEnumerable<(string categoryId, string categoryDisplayName, List<Skill> skills)> GroupSkills(List<Skill> skills)
     {
-        // Stable ordering keeps the UI predictable.
+        // Stable ordering.
         var categoryOrder = new List<(string id, string display)>
         {
             ("hlt", "Health"),
