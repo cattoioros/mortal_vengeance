@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//controls random movement of NPCs
 public class NPCMovement : MonoBehaviour
 {
     public float moveSpeed;
@@ -13,12 +14,14 @@ public class NPCMovement : MonoBehaviour
 
     void Start()
     {
+        //get the rigidbody component
         rb = GetComponent<Rigidbody>();
         ChooseNewDirection();
     }
 
     void FixedUpdate()
     {
+        //specify desired velocity based on direction
         Vector3 desiredVelocity = direction * moveSpeed;
         desiredVelocity.y = rb.linearVelocity.y;
 
@@ -27,9 +30,7 @@ public class NPCMovement : MonoBehaviour
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            rb.MoveRotation(
-                Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime)
-            );
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime));
         }
     }
 

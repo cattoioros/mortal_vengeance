@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// details for weapon items
 [CreateAssetMenu(menuName = "Items/Weapon")]
 public class WeaponItemData : ItemData
 {

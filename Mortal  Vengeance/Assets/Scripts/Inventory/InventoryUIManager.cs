@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//manages the inventory UI: equipment panel, inventory grid, hotbar grid + some logic to add items to inventory(should be moved to InventoryScript later)
 public class InventoryUIManager : MonoBehaviour
 {
     [Header("Panels")]

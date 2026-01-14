@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// when the weapon collides with something, it notifies the PlayerAttack component to handle the hit
 public class WeaponDamage : MonoBehaviour
 {
     public PlayerAttack playerAttack;
