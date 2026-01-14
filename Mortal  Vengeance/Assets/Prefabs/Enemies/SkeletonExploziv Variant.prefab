@@ -135,7 +135,7 @@ MonoBehaviour:
   movementSpeed: 6
   chaseRange: 100
   attackRange: 1
-  baseDmg: 20
+  baseDmg: 17
   attackCooldown: 1
   healthBar: {fileID: 0}
   explosionRadius: 2
