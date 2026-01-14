@@ -99,7 +99,6 @@ void TryLightAttack()
     
 
     StopAllCoroutines();
-    StartCoroutine(ActivateHitbox());
     
 }
 
@@ -115,30 +114,32 @@ void TryLightAttack()
         currentAttackIndex = 0;
         animator.SetTrigger("HeavyAttack");
         StopAllCoroutines();
-        StartCoroutine(ActivateHitbox());
+  
     
     }
 
-    IEnumerator ActivateHitbox()
+    private void ActivateHitbox()
     {
         
         // Un mic delay pentru a lasa animatia sa porneasca inainte de a activa colliderul
 
         enemiesHit.Clear();
 
-        yield return new WaitForSeconds(0.15f);
 
 
         if (hitbox != null)
         {
             hitbox.enabled = true;
-            yield return new WaitForSeconds(1.5f); // Cat timp ramane atacul activ
+            
+        }
+    }
+
+    private void DeactivateHitbox()
+    {
+        if (hitbox != null)
+        {
             hitbox.enabled = false;
         }
-
-
-
-        
     }
 
     public void HandleHit(Collider other)
