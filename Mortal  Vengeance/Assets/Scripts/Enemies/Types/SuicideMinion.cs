@@ -5,8 +5,8 @@ using UnityEngine.AI;
 public class SuicideMinion : EnemyBase
 {
     [SerializeField] private float explosionRadius = 3f;
-    [SerializeField] private int explosionDmg = 25;
-    [SerializeField] private float explosionTriggerRadius = 1.5f;
+    [SerializeField] private int explosionDmg = 20;
+    [SerializeField] private float explosionTriggerRadius = 1f;
     [SerializeField] private float explosionDelay = 1f;
     [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private Material redMaterial;
@@ -85,8 +85,8 @@ public class SuicideMinion : EnemyBase
             {
                 // Ignore self
                 if (enemy.gameObject == gameObject) continue;
-                // Ignore Spawner
-                if (enemy.GetType() == typeof(MinionSpawner)) continue;
+                // Less dmg for  Spawner
+                if (enemy.GetType() == typeof(MinionSpawner)) enemy.TakeDamage(explosionDmg / 2);
 
                 enemy.TakeDamage(explosionDmg);
             }

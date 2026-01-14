@@ -219,7 +219,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6848092843564452251, guid: 2f4a1a3e113a77046943e08f3de2583e, type: 3}
       propertyPath: spawnRate
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6848092843564452251, guid: 2f4a1a3e113a77046943e08f3de2583e, type: 3}
       propertyPath: chaseRange
@@ -239,7 +239,7 @@ PrefabInstance:
       objectReference: {fileID: 7271660266612467227, guid: ae3fcae93792b9d49997ebbfb4e6ba9e, type: 3}
     - target: {fileID: 6848092843564452251, guid: 2f4a1a3e113a77046943e08f3de2583e, type: 3}
       propertyPath: attackCooldown
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6848092843564452251, guid: 2f4a1a3e113a77046943e08f3de2583e, type: 3}
       propertyPath: audioController

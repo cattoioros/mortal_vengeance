@@ -187,7 +187,7 @@ public class PromisedBoss : EnemyBase
 
             if (meteor.TryGetComponent<Meteor>(out var script))
             {
-                script.SetMeteor(targetPos, meteorDelayTime, baseDmg * 2, meteorAoERadius, this);
+                script.SetMeteor(targetPos, meteorDelayTime, baseDmg, meteorAoERadius, this);
             }
         }
 
@@ -234,7 +234,7 @@ public class PromisedBoss : EnemyBase
         explosion.transform.localScale = Vector3.one * 7f;
         audioController?.playExplosionCue();
 
-        ApplySphereDamage(transform.position, 5f, baseDmg * 2);
+        ApplySphereDamage(transform.position, 5f, baseDmg/2);
         Destroy(explosion, 2f);
 
    
@@ -254,7 +254,7 @@ public class PromisedBoss : EnemyBase
 
         Vector3 thrustPos = transform.position + transform.forward * 1.2f;
         yield return new WaitForSeconds(0.8f);
-        ApplySphereDamage(thrustPos, 3f, baseDmg);
+        ApplySphereDamage(thrustPos, 3f, baseDmg/2);
 
         // Two delayed explosions
         for (int i = 0; i < 2; i++)
@@ -271,7 +271,7 @@ public class PromisedBoss : EnemyBase
             explosion.transform.localScale = Vector3.one * 5f;
             audioController?.playExplosionCue();
 
-            ApplySphereDamage(thrustPos, 4f, baseDmg * 2);
+            ApplySphereDamage(thrustPos, 4f, baseDmg / 2);
             Destroy(explosion, 2f);
         }
 

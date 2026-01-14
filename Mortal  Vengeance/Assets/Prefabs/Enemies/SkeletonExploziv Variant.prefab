@@ -135,10 +135,11 @@ MonoBehaviour:
   movementSpeed: 6
   chaseRange: 100
   attackRange: 1
-  baseDmg: 40
+  baseDmg: 20
   attackCooldown: 1
-  explosionRadius: 3
-  explosionDmg: 50
+  healthBar: {fileID: 0}
+  explosionRadius: 2
+  explosionDmg: 20
   explosionTriggerRadius: 1.5
   explosionDelay: 1
   explosionPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
