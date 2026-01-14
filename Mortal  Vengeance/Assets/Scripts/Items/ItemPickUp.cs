@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 
+// system for picking up items in the game world
 public class ItemPickup : MonoBehaviour
 {
     public ItemData item;
@@ -8,6 +9,7 @@ public class ItemPickup : MonoBehaviour
     private bool playerInRange;
     private bool pickedUp;
 
+    // Check for player input to pick up the item
     void Update()
     {
         if (!playerInRange || pickedUp) return;
@@ -33,6 +35,7 @@ public class ItemPickup : MonoBehaviour
         Destroy(gameObject);
     }
 
+    // Detect when the player enters the pickup range
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -43,6 +46,7 @@ public class ItemPickup : MonoBehaviour
         }
     }
 
+    // Detect when the player exits the pickup range
     void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))

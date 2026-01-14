@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Manages equipping and unequipping weapons for the player
 public class WeaponManager : MonoBehaviour
 {
     public Transform weaponHolder;

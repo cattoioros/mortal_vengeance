@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Controls the system menu and settings menu
 public class SystemMenuController : MonoBehaviour
 {
-    enum MenuState  //definirea starilor meniului
+    enum MenuState  //menu states
     {
         Closed,
         System,
@@ -44,7 +45,7 @@ public class SystemMenuController : MonoBehaviour
             return;
     }
 
-    //ce se intampla cand apas ESC in functie de starea meniului
+    //what happens when escape is pressed
     void HandleEscape()
     {
         switch (currentState)
@@ -76,45 +77,45 @@ public class SystemMenuController : MonoBehaviour
             hotbarRoot.SetActive(false);
         }
 
-        systemMenu.SetActive(true); //afisez meniul principal
-        settingsMenu.SetActive(false); //ascund meniul de setari
+        systemMenu.SetActive(true); //show main menu
+        settingsMenu.SetActive(false); //hide settings menu
 
-        Time.timeScale = 0f; //opresc jocul
-        Cursor.visible = true; //afisez cursorul
+        Time.timeScale = 0f; //stop game time
+        Cursor.visible = true; //show cursor
         Cursor.lockState = CursorLockMode.None;
 
-        IsUIBlockingInput = true;//cat timp e meniul pornit nu se intampla nimic daca apas pe alte taste
-        currentState = MenuState.System; //setez starea ca fiind meniul principal deschis
+        IsUIBlockingInput = true;//while menu is open, block game input
+        currentState = MenuState.System; //set menu state to system
     }
 
     public void Resume()
     {
-        systemMenu.SetActive(false);//ascund meniul principal
-        settingsMenu.SetActive(false);//ascund meniul de setari
+        systemMenu.SetActive(false);
+        settingsMenu.SetActive(false);
 
         if (hotbarRoot != null)
         {
             hotbarRoot.SetActive(true);
         }
 
-        Time.timeScale = 1f; //repornesc jocul 
-        Cursor.visible = false; //ascund cursorul
+        Time.timeScale = 1f;  
+        Cursor.visible = false; 
         Cursor.lockState = CursorLockMode.Locked; 
 
-        IsUIBlockingInput = false; //jocul poate primi input din nou
-        currentState = MenuState.Closed;//setez starea meniului ca fiind inchis
+        IsUIBlockingInput = false; 
+        currentState = MenuState.Closed;
     }
 
     public void Restart()
     {
-        Time.timeScale = 1f; //repornesc jocul
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //reincarc scena curenta
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //reload current scene
         IsUIBlockingInput = false; 
     }
 
     public void OpenSettings()
     {
-        //verific daca sunt in meniul principal inainte de a deschide setarile
+        //check if we are in the system menu
         if (currentState != MenuState.System) 
             return;
 

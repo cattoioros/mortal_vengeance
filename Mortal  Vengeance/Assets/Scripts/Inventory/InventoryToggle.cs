@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+//system for inventory opening and closing
 public class InventoryToggle : MonoBehaviour
 {
     public GameObject inventoryPanel;

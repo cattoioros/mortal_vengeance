@@ -58,7 +58,7 @@ public class InventorySystem : MonoBehaviour
 
         ItemData draggedItem = from.currentItem;
 
-        // EQUIP
+        //equip
         if (to.slotType == InventorySlot.SlotType.Equipment && to.index == 1)
         {
             if (draggedItem is WeaponItemData weapon)
@@ -75,14 +75,14 @@ public class InventorySystem : MonoBehaviour
             }
         }
 
-        // UNEQUIP
+        //unequip
         if (from.slotType == InventorySlot.SlotType.Equipment && from.index == 1)
         {
             weaponManager?.Unequip();
             consumableManager?.Unequip();
         }
 
-        // UI MOVE
+        //ui move
         to.SetItem(draggedItem);
         from.Clear();
 
@@ -102,8 +102,10 @@ public class InventorySystem : MonoBehaviour
         Debug.Log($"Swapped slot {a.index} with slot {b.index}");
     }
 
+    //equips an item from the hotbar to the equipment slot
     public void EquipFromHotbar(InventorySlot hotbarSlot)
     {
+        //validate hotbar slot
         if (hotbarSlot == null || hotbarSlot.currentItem == null)
             return;
 
@@ -112,6 +114,7 @@ public class InventorySystem : MonoBehaviour
 
         InventorySlot equipmentSlot = null;
 
+        //find the equipment slot with index 1
         foreach (Transform child in ui.equipmentPanel)
         {
             InventorySlot slot = child.GetComponent<InventorySlot>();
@@ -137,9 +140,9 @@ public class InventorySystem : MonoBehaviour
 
         equippedSlot = equipmentSlot;
 
-        
 
-        
+
+        //equip logic
         if (equipmentSlot.currentItem is WeaponItemData weapon)
         {
             weaponManager?.EquipWeapon(weapon);
@@ -156,7 +159,7 @@ public class InventorySystem : MonoBehaviour
 
 
 
-
+    //consumes the currently equipped item(for consumables)
     public void ConsumeEquippedItem()
     {
         if (equippedSlot == null)
