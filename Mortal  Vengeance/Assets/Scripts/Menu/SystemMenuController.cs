@@ -8,7 +8,8 @@ public class SystemMenuController : MonoBehaviour
     {
         Closed,
         System,
-        Settings
+        Settings,
+        Controls
     }
 
     MenuState currentState = MenuState.Closed;
@@ -16,6 +17,8 @@ public class SystemMenuController : MonoBehaviour
     public GameObject settingsMenu;
     public InventoryToggle inventoryToggle;
     public GameObject hotbarRoot;
+    public GameObject controlsMenu;
+
 
 
     public static bool IsUIBlockingInput { get; private set; }
@@ -30,6 +33,8 @@ public class SystemMenuController : MonoBehaviour
         Debug.Log("SystemMenuController START");
         systemMenu.SetActive(false);
         settingsMenu.SetActive(false);
+        controlsMenu.SetActive(false);
+
     }
 
     void Update()
@@ -60,6 +65,10 @@ public class SystemMenuController : MonoBehaviour
 
             case MenuState.Settings:
                 CloseSettings();
+                break;
+
+            case MenuState.Controls:
+                CloseControls();
                 break;
         }
     }
@@ -134,4 +143,28 @@ public class SystemMenuController : MonoBehaviour
         IsUIBlockingInput = true;
         currentState = MenuState.System;
     }
+
+    public void OpenControls()
+    {
+        if (currentState != MenuState.System)
+            return;
+
+        systemMenu.SetActive(false);
+        settingsMenu.SetActive(false);
+        controlsMenu.SetActive(true);
+
+        IsUIBlockingInput = true;
+        currentState = MenuState.Controls;
+    }
+
+    public void CloseControls()
+    {
+        controlsMenu.SetActive(false);
+        systemMenu.SetActive(true);
+
+        IsUIBlockingInput = true;
+        currentState = MenuState.System;
+    }
+
+
 }
